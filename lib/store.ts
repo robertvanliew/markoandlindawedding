@@ -27,12 +27,12 @@ export type RsvpResponse = {
   updated_at: string;
 };
 
-// Test invites (brief §7): single, couple, family with kids, two parties sharing a name,
+// Test invites (brief §7): single, couple, a larger adult party, two parties sharing a name,
 // and Serbian diacritics (Đorđević must also match "Djordjevic").
 const SEED: Invite[] = [
   { id: "inv-1", token: "k7m2q9xw", party_name: "Jelena Marković", aliases: [], email: null, max_guests: 1, kids_allowed: false },
   { id: "inv-2", token: "p4t8z3va", party_name: "Ana & Petar Jovanović", aliases: [], email: null, max_guests: 2, kids_allowed: false },
-  { id: "inv-3", token: "d9r5w1hn", party_name: "The Đorđević Family", aliases: ["Dragan Đorđević", "Mira Đorđević"], email: null, max_guests: 5, kids_allowed: true },
+  { id: "inv-3", token: "d9r5w1hn", party_name: "The Đorđević Family", aliases: ["Dragan Đorđević", "Mira Đorđević"], email: null, max_guests: 4, kids_allowed: false },
   { id: "inv-4", token: "m3n6c8ye", party_name: "Milan & Vesna Nikolić", aliases: [], email: null, max_guests: 2, kids_allowed: false },
   { id: "inv-5", token: "s2f7j4ub", party_name: "Milan Nikolić", aliases: [], email: null, max_guests: 1, kids_allowed: false },
 ];

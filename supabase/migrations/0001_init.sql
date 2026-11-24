@@ -26,7 +26,7 @@ create table response_guests (
   id uuid primary key default gen_random_uuid(),
   response_id uuid not null references responses on delete cascade,
   full_name text not null,
-  meal text check (meal in ('chicken','beef','veggie','kids')),
+  meal text check (meal in ('chicken','beef','veggie')),
   dietary_notes text
 );
 

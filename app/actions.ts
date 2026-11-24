@@ -70,7 +70,7 @@ const SubmitSchema = z.object({
     .array(
       z.object({
         full_name: z.string().trim().min(1, "Please enter a name").max(80),
-        meal: z.enum(["chicken", "beef", "veggie", "kids"]),
+        meal: z.enum(["chicken", "beef", "veggie"]),
         dietary_notes: z.string().trim().max(300).optional().default(""),
       }),
     )
@@ -81,7 +81,7 @@ const SubmitSchema = z.object({
 
 export type SubmitResult =
   | { ok: true; invite: InviteView }
-  | { ok: false; error: "closed" | "invalid" | "limited" | "not_found" | "too_many" | "kids_not_allowed" };
+  | { ok: false; error: "closed" | "invalid" | "limited" | "not_found" | "too_many" };
 
 export async function submitRsvp(input: unknown): Promise<SubmitResult> {
   if (!rsvpOpen()) return { ok: false, error: "closed" };
@@ -96,7 +96,6 @@ export async function submitRsvp(input: unknown): Promise<SubmitResult> {
   const guests = data.attending ? data.guests : [];
   if (data.attending && guests.length < 1) return { ok: false, error: "invalid" };
   if (guests.length > invite.max_guests) return { ok: false, error: "too_many" };
-  if (!invite.kids_allowed && guests.some((g) => g.meal === "kids")) return { ok: false, error: "kids_not_allowed" };
 
   await saveResponse(invite.id, {
     attending: data.attending,

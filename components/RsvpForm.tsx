@@ -14,7 +14,6 @@ const SUBMIT_ERRORS: Record<Exclude<SubmitResult, { ok: true }>["error"], string
   limited: "Too many attempts in a short time. Please wait a minute and try again.",
   not_found: "We couldn't find your invitation any more. Please search for your name again.",
   too_many: "That is more guests than the seats reserved for your party.",
-  kids_not_allowed: "The Kids' Meal isn't available for this invitation. Please choose another meal.",
 };
 
 const mealLabel = (m: string) => MEALS.find((x) => x.value === m)?.label ?? m;
@@ -358,7 +357,7 @@ export function RsvpForm({ initialInvite = null, closed = false }: { initialInvi
 
   // ---------- Steps 1–4: the reply ----------
   const seats = invite.max_guests;
-  const meals = MEALS.filter((m) => m.value !== "kids" || invite.kids_allowed);
+  const meals = MEALS;
 
   return (
     <form onSubmit={onSubmit} noValidate className="step-enter grid gap-8" aria-busy={pending}>
@@ -402,7 +401,7 @@ export function RsvpForm({ initialInvite = null, closed = false }: { initialInvi
           <fieldset className="grid gap-4">
             <legend className="step-heading mb-2 w-full">How many guests will be attending?</legend>
             <p className="step-note mt-0 mb-2">
-              We have reserved {seats} {seats === 1 ? "seat" : "seats"} in your honour.
+              We have reserved {seats} {seats === 1 ? "seat" : "seats"} in your honour. Our celebration is adults only.
             </p>
             {seats > 1 ? (
               <div className="count-group">

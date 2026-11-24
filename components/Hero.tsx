@@ -1,6 +1,9 @@
 import { HeroMotion } from "./HeroMotion";
 
-/** Full-screen opening. Wording is the invitation's, verbatim and in order (PROJECT_BRIEF.md §2). */
+/**
+ * Full-screen opening, in the invitation's wording. The date and venues line was removed at the
+ * couple's request; both appear in When & Where below.
+ */
 export function Hero() {
   let i = 0;
   const rise = (extra = "") => ({ className: `rise ${extra}`.trim(), style: { "--i": i++ } as React.CSSProperties });
@@ -18,21 +21,7 @@ export function Hero() {
           <span {...rise()}>Marko Pupavac</span>
         </h1>
 
-        <p {...rise("hero-lead")}>invite you to join them as they celebrate their marriage on</p>
-
-        <div {...rise()}>
-          <div className="hero-rule" aria-hidden="true" />
-          <p className="hero-date">
-            Saturday, May 15<span className="ord">th</span>, 2027
-          </p>
-          <p className="hero-venues">
-            <span>St. Sava Serbian Orthodox Church</span>
-            <span className="dot" aria-hidden="true">
-              ·
-            </span>
-            <span>Château Le Jardin</span>
-          </p>
-        </div>
+        <p {...rise("hero-lead")}>invite you to join them as they celebrate their marriage</p>
 
         <div {...rise("hero-actions")}>
           <a className="btn" href="#rsvp">

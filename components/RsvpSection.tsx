@@ -12,7 +12,7 @@ export function RsvpSection({ invite = null }: { invite?: InviteView | null }) {
             RSVP
           </h2>
           <p className="section-sub">
-            {closed ? "RSVPs are now closed" : `Please reply by ${RSVP_DEADLINE_LABEL}. Your personal link skips the name search.`}
+            {closed ? "RSVPs are now closed" : `Please reply by ${RSVP_DEADLINE_LABEL}. We kindly ask that our celebration be adults only.`}
           </p>
         </div>
         <div className="card rsvp-card">

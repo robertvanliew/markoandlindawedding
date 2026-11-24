@@ -34,7 +34,7 @@ It is the printed invitation brought to life, not a wedding template: the same w
 
 - Single scrolling page `/` (hero invitation, details, RSVP, footer), `/rsvp/[token]`, `/admin`. No registry, song picker, video page, story, hotel block or dress code unless added to the brief.
 - Seat cap enforced in the UI (stepper/select, never free text) and on the server. One response per invite; resubmitting updates it. Lookup never reveals or enumerates the guest list. Honeypot and rate limiting on lookup and submit.
-- Meals: Chicken, Beef, Veggie, Kids' Meal. **Kids' Meal appears only for invites flagged `kids_allowed`** (confirmed).
+- Meals: Chicken, Beef, Veggie. **The celebration is adults only** (confirmed by the bride, Nov 2026): no Kids' Meal, and the RSVP says so. The `kids_allowed` column is kept in the schema but unused.
 - After the deadline the form becomes read only with a "please contact Linda and Marko directly" message.
 - `noindex, nofollow` sitewide; no analytics or third-party trackers.
 - **Languages: English and Serbian** (confirmed; supersedes the brief's English-only default). All guest-facing copy, form labels, errors, confirmation and emails need both languages. Open: Serbian script (Latin vs Cyrillic), who supplies or approves the Serbian translations, how a guest switches language, and whether `/admin` is translated.

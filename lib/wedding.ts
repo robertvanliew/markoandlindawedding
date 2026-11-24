@@ -69,7 +69,6 @@ export const MEALS = [
   { value: "chicken", label: "Chicken" },
   { value: "beef", label: "Beef" },
   { value: "veggie", label: "Veggie" },
-  { value: "kids", label: "Kids' Meal" },
 ] as const;
 
 export type Meal = (typeof MEALS)[number]["value"];
