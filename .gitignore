@@ -1,0 +1,21 @@
+node_modules
+.next
+out
+.env*.local
+.env
+*.tsbuildinfo
+next-env.d.ts
+.impeccable/config.local.json
+
+# design working material (screenshots, raw generations, references)
+.impeccable/church/
+.impeccable/peony-gen/
+.impeccable/reference/
+.impeccable/review/
+.impeccable/mocks/
+.impeccable/server.log
+
+# local tool configuration
+.gemini/
+.mcp.json
+.claude/settings.local.json

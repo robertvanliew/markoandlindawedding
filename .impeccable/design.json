@@ -1,0 +1,473 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-20T21:35:20.324Z",
+  "title": "Design System: Linda & Marko",
+  "extensions": {
+    "colorMeta": {
+      "paper": {
+        "role": "neutral",
+        "displayName": "Card Stock Ivory",
+        "canonical": "oklch(98.9% 0.005 78.3)",
+        "tonalRamp": [
+          "oklch(15% 0.004 78.3)",
+          "oklch(26% 0.004 78.3)",
+          "oklch(37% 0.004 78.3)",
+          "oklch(48% 0.005 78.3)",
+          "oklch(59% 0.005 78.3)",
+          "oklch(70% 0.004 78.3)",
+          "oklch(82% 0.004 78.3)",
+          "oklch(95% 0.004 78.3)"
+        ]
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Warm Ground",
+        "canonical": "oklch(96.1% 0.010 67.7)",
+        "tonalRamp": [
+          "oklch(15% 0.004 67.7)",
+          "oklch(26% 0.004 67.7)",
+          "oklch(37% 0.007 67.7)",
+          "oklch(48% 0.009 67.7)",
+          "oklch(59% 0.010 67.7)",
+          "oklch(70% 0.007 67.7)",
+          "oklch(82% 0.005 67.7)",
+          "oklch(95% 0.004 67.7)"
+        ]
+      },
+      "blush": {
+        "role": "neutral",
+        "displayName": "Blush Glow",
+        "canonical": "oklch(93.3% 0.019 57.2)",
+        "tonalRamp": [
+          "oklch(15% 0.004 57.2)",
+          "oklch(26% 0.008 57.2)",
+          "oklch(37% 0.013 57.2)",
+          "oklch(48% 0.018 57.2)",
+          "oklch(59% 0.019 57.2)",
+          "oklch(70% 0.014 57.2)",
+          "oklch(82% 0.009 57.2)",
+          "oklch(95% 0.004 57.2)"
+        ]
+      },
+      "card": {
+        "role": "neutral",
+        "displayName": "Card White",
+        "canonical": "oklch(99.5% 0.005 78.3)",
+        "tonalRamp": [
+          "oklch(15% 0.004 78.3)",
+          "oklch(26% 0.004 78.3)",
+          "oklch(37% 0.004 78.3)",
+          "oklch(48% 0.005 78.3)",
+          "oklch(59% 0.005 78.3)",
+          "oklch(70% 0.004 78.3)",
+          "oklch(82% 0.004 78.3)",
+          "oklch(95% 0.004 78.3)"
+        ]
+      },
+      "field-white": {
+        "role": "neutral",
+        "displayName": "Field White",
+        "canonical": "oklch(100% 0.000 0.0)",
+        "tonalRamp": [
+          "oklch(15% 0.000 0.0)",
+          "oklch(26% 0.000 0.0)",
+          "oklch(37% 0.000 0.0)",
+          "oklch(48% 0.000 0.0)",
+          "oklch(59% 0.000 0.0)",
+          "oklch(70% 0.000 0.0)",
+          "oklch(82% 0.000 0.0)",
+          "oklch(95% 0.000 0.0)"
+        ]
+      },
+      "names": {
+        "role": "neutral",
+        "displayName": "Names Taupe",
+        "canonical": "oklch(54.9% 0.057 61.4)",
+        "tonalRamp": [
+          "oklch(15% 0.007 61.4)",
+          "oklch(26% 0.023 61.4)",
+          "oklch(37% 0.038 61.4)",
+          "oklch(48% 0.054 61.4)",
+          "oklch(59% 0.057 61.4)",
+          "oklch(70% 0.043 61.4)",
+          "oklch(82% 0.026 61.4)",
+          "oklch(95% 0.007 61.4)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Print Taupe",
+        "canonical": "oklch(63.5% 0.055 63.7)",
+        "tonalRamp": [
+          "oklch(15% 0.007 63.7)",
+          "oklch(26% 0.022 63.7)",
+          "oklch(37% 0.037 63.7)",
+          "oklch(48% 0.052 63.7)",
+          "oklch(59% 0.055 63.7)",
+          "oklch(70% 0.041 63.7)",
+          "oklch(82% 0.025 63.7)",
+          "oklch(95% 0.007 63.7)"
+        ]
+      },
+      "ink-deep": {
+        "role": "neutral",
+        "displayName": "Body Umber",
+        "canonical": "oklch(49.7% 0.056 61.0)",
+        "tonalRamp": [
+          "oklch(15% 0.007 61.0)",
+          "oklch(26% 0.022 61.0)",
+          "oklch(37% 0.038 61.0)",
+          "oklch(48% 0.053 61.0)",
+          "oklch(59% 0.056 61.0)",
+          "oklch(70% 0.042 61.0)",
+          "oklch(82% 0.025 61.0)",
+          "oklch(95% 0.007 61.0)"
+        ]
+      },
+      "ink-strong": {
+        "role": "primary",
+        "displayName": "Umber Ink",
+        "canonical": "oklch(41% 0.048 58.5)",
+        "tonalRamp": [
+          "oklch(15% 0.006 58.5)",
+          "oklch(26% 0.019 58.5)",
+          "oklch(37% 0.032 58.5)",
+          "oklch(48% 0.046 58.5)",
+          "oklch(59% 0.048 58.5)",
+          "oklch(70% 0.036 58.5)",
+          "oklch(82% 0.022 58.5)",
+          "oklch(95% 0.006 58.5)"
+        ]
+      },
+      "ink-strong-hover": {
+        "role": "primary",
+        "displayName": "Umber Ink Pressed",
+        "canonical": "oklch(35.6% 0.043 58.0)",
+        "tonalRamp": [
+          "oklch(15% 0.005 58.0)",
+          "oklch(26% 0.017 58.0)",
+          "oklch(37% 0.029 58.0)",
+          "oklch(48% 0.041 58.0)",
+          "oklch(59% 0.043 58.0)",
+          "oklch(70% 0.032 58.0)",
+          "oklch(82% 0.019 58.0)",
+          "oklch(95% 0.005 58.0)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted Umber",
+        "canonical": "oklch(51.2% 0.051 59.7)",
+        "tonalRamp": [
+          "oklch(15% 0.006 59.7)",
+          "oklch(26% 0.020 59.7)",
+          "oklch(37% 0.034 59.7)",
+          "oklch(48% 0.048 59.7)",
+          "oklch(59% 0.051 59.7)",
+          "oklch(70% 0.038 59.7)",
+          "oklch(82% 0.023 59.7)",
+          "oklch(95% 0.006 59.7)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "oklch(89.2% 0.023 67.5)",
+        "tonalRamp": [
+          "oklch(15% 0.004 67.5)",
+          "oklch(26% 0.009 67.5)",
+          "oklch(37% 0.016 67.5)",
+          "oklch(48% 0.022 67.5)",
+          "oklch(59% 0.023 67.5)",
+          "oklch(70% 0.017 67.5)",
+          "oklch(82% 0.010 67.5)",
+          "oklch(95% 0.004 67.5)"
+        ]
+      },
+      "control": {
+        "role": "neutral",
+        "displayName": "Field Stroke",
+        "canonical": "oklch(63.5% 0.055 63.7)",
+        "tonalRamp": [
+          "oklch(15% 0.007 63.7)",
+          "oklch(26% 0.022 63.7)",
+          "oklch(37% 0.037 63.7)",
+          "oklch(48% 0.052 63.7)",
+          "oklch(59% 0.055 63.7)",
+          "oklch(70% 0.041 63.7)",
+          "oklch(82% 0.025 63.7)",
+          "oklch(95% 0.007 63.7)"
+        ]
+      },
+      "error": {
+        "role": "error",
+        "displayName": "Terracotta Error",
+        "canonical": "oklch(54% 0.110 36.5)",
+        "tonalRamp": [
+          "oklch(15% 0.014 36.5)",
+          "oklch(26% 0.044 36.5)",
+          "oklch(37% 0.074 36.5)",
+          "oklch(48% 0.104 36.5)",
+          "oklch(59% 0.110 36.5)",
+          "oklch(70% 0.083 36.5)",
+          "oklch(82% 0.050 36.5)",
+          "oklch(95% 0.014 36.5)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Names Script",
+        "purpose": "Pinyon Script for names only: the couple in the hero and footer (in names ink), the nav monogram, and a guest party's name as the RSVP greeting."
+      },
+      "headline": {
+        "displayName": "Section Title",
+        "purpose": "Cormorant Garamond italic 500, centred section titles in ink-strong."
+      },
+      "lead": {
+        "displayName": "Spoken Line",
+        "purpose": "Cormorant Garamond italic for the invitation line under the names and the footer's 'With love,'."
+      },
+      "invitation-caps": {
+        "displayName": "Printed Caps",
+        "purpose": "Cormorant Garamond caps for lines the invitation prints and the labels that name them: the hero date (0.14em; 0.06em under 360px), the opening line (0.14em; 0.08em under 560px), the hero venue line (0.1em; one venue per line, nowrap, clamp(0.9rem, 3.9vw, 1.0625rem) at 0.04em under 560px), venue card headings (1.125rem, 0.1em, 600, ink-strong) and the footer date (1.125rem, 0.1em, 500, ink-deep)."
+      },
+      "title": {
+        "displayName": "Step Heading",
+        "purpose": "Cormorant 500 for RSVP step headings; weight 600 for venue names and guest legends."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Jost 400 at 1.0625rem / 1.65 for all running text and field values."
+      },
+      "label": {
+        "displayName": "Caps Label",
+        "purpose": "Jost 500 tracked caps for nav links (0.22em); meal tags at 0.2em. The only Jost caps on the site."
+      },
+      "button": {
+        "displayName": "Button",
+        "purpose": "Jost 500 caps at 0.08em on every pill."
+      }
+    },
+    "shadows": [
+      {
+        "name": "card-rest",
+        "value": "0 1px 2px rgb(94 68 48 / 0.04), 0 12px 32px -12px rgb(94 68 48 / 0.12), 0 40px 80px -48px rgb(94 68 48 / 0.18)",
+        "purpose": "Venue and RSVP cards: contact line, near lift, long low pool."
+      },
+      {
+        "name": "pill-rest",
+        "value": "0 10px 24px -14px rgb(94 68 48 / 0.6)",
+        "purpose": "Filled pills at rest."
+      },
+      {
+        "name": "pill-hover",
+        "value": "0 14px 28px -14px rgb(94 68 48 / 0.7)",
+        "purpose": "Filled pills on hover, with a 1px lift."
+      },
+      {
+        "name": "nav-scrolled",
+        "value": "0 8px 24px -20px rgb(94 68 48 / 0.35)",
+        "purpose": "The nav once it fills on scroll, paired with saturate(1.2) blur(14px)."
+      },
+      {
+        "name": "field-focus",
+        "value": "0 0 0 4px rgb(94 68 48 / 0.12)",
+        "purpose": "Focus halo around inputs."
+      },
+      {
+        "name": "choice-selected",
+        "value": "inset 0 0 0 1px #5e4430",
+        "purpose": "Doubles the ink border on a selected answer choice."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "The single easing for blooms, rises and state changes."
+      },
+      {
+        "name": "bloom",
+        "value": "2200ms ease-out-expo; top-left delay 100ms, bottom-right 350ms",
+        "purpose": "Peony unfolds from its corner: circle clip-path 0% to 150% at the corner, opacity in, blur 6px clearing by 60%, scale 0.86 and rotate -5deg settling to rest."
+      },
+      {
+        "name": "sway",
+        "value": "11s ease-in-out infinite from 2300ms (bottom-right 13s, reversed)",
+        "purpose": "Inner layer rotates 0, 1deg, -0.45deg: the breeze."
+      },
+      {
+        "name": "drift",
+        "value": "7s ease-in-out infinite from 2300ms (bottom-right 8.5s)",
+        "purpose": "Inner layer translates 2px, -2px, out of phase with the sway; both pause while the hero is off screen."
+      },
+      {
+        "name": "rise-in",
+        "value": "1100ms ease-out-expo, delay 450ms + i * 110ms",
+        "purpose": "Hero lines enter from 14px below with a fade, in reading order."
+      },
+      {
+        "name": "step-enter",
+        "value": "450ms ease-out-expo",
+        "purpose": "Each RSVP step and revealed sub-section rises in (rise-in keyframes)."
+      },
+      {
+        "name": "state",
+        "value": "150ms fields, 160-200ms pills, 180ms choices, 300ms nav and cards",
+        "purpose": "Hover, press and focus transitions."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "fade-in 700ms (hero, peonies), 200ms (RSVP steps), ease-out",
+        "purpose": "Under prefers-reduced-motion: plain fades replace bloom, rise and step-enter; no sway or drift; hover lifts removed; instant anchor scrolling."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "tiny",
+        "value": "359px"
+      },
+      {
+        "name": "phone",
+        "value": "560px"
+      },
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "venues-stack",
+        "value": "760px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Pill",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The filled pill for the one main action: RSVP, Reply now, Find, Send.",
+      "html": "<a class=\"ds-btn\" href=\"#rsvp\">RSVP</a>",
+      "css": ":host{--color-paper:#fdfbf8;--color-ground:#f7f1eb;--color-blush:#f3e6dd;--color-card:#fffdfa;--color-ink:#a38468;--color-names:#8a6a4f;--color-ink-deep:#7a5b41;--color-ink-strong:#5e4430;--color-muted:#7d6049;--color-line:#e6d9cc;--color-control:#a38468;--color-error:#a4553f;--font-serif:\"Cormorant Garamond\",Georgia,serif;--font-script:\"Pinyon Script\",cursive;--font-sans:\"Jost\",system-ui,sans-serif;--ease-out-expo:cubic-bezier(0.16,1,0.3,1);--radius-card:28px;--radius-field:14px;--shadow-card:0 1px 2px rgb(94 68 48 / 0.04),0 12px 32px -12px rgb(94 68 48 / 0.12),0 40px 80px -48px rgb(94 68 48 / 0.18);} .ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5em;min-height:48px;padding:0.75em 1.75em;border-radius:999px;border:1px solid var(--color-ink-strong);background:var(--color-ink-strong);color:#fffdfa;font-family:var(--font-sans);font-size:0.9375rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;cursor:pointer;box-shadow:0 10px 24px -14px rgb(94 68 48 / 0.6);transition:background-color 200ms var(--ease-out-expo),box-shadow 200ms var(--ease-out-expo),transform 160ms var(--ease-out-expo);} .ds-btn:hover{background:#4f3826;box-shadow:0 14px 28px -14px rgb(94 68 48 / 0.7);transform:translateY(-1px);} .ds-btn:active{transform:translateY(0) scale(0.98);} .ds-btn:focus-visible{outline:2px solid var(--color-ink-strong);outline-offset:3px;}"
+    },
+    {
+      "name": "Ghost Pill",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "The secondary pill beside a filled one: See the details, Add to calendar.",
+      "html": "<a class=\"ds-btn ds-btn-ghost\" href=\"#details\">See the details</a>",
+      "css": ":host{--color-paper:#fdfbf8;--color-ground:#f7f1eb;--color-blush:#f3e6dd;--color-card:#fffdfa;--color-ink:#a38468;--color-names:#8a6a4f;--color-ink-deep:#7a5b41;--color-ink-strong:#5e4430;--color-muted:#7d6049;--color-line:#e6d9cc;--color-control:#a38468;--color-error:#a4553f;--font-serif:\"Cormorant Garamond\",Georgia,serif;--font-script:\"Pinyon Script\",cursive;--font-sans:\"Jost\",system-ui,sans-serif;--ease-out-expo:cubic-bezier(0.16,1,0.3,1);--radius-card:28px;--radius-field:14px;--shadow-card:0 1px 2px rgb(94 68 48 / 0.04),0 12px 32px -12px rgb(94 68 48 / 0.12),0 40px 80px -48px rgb(94 68 48 / 0.18);} .ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5em;min-height:48px;padding:0.75em 1.75em;border-radius:999px;border:1px solid var(--color-ink-strong);background:var(--color-ink-strong);color:#fffdfa;font-family:var(--font-sans);font-size:0.9375rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;cursor:pointer;box-shadow:0 10px 24px -14px rgb(94 68 48 / 0.6);transition:background-color 200ms var(--ease-out-expo),box-shadow 200ms var(--ease-out-expo),transform 160ms var(--ease-out-expo);} .ds-btn:hover{background:#4f3826;box-shadow:0 14px 28px -14px rgb(94 68 48 / 0.7);transform:translateY(-1px);} .ds-btn:active{transform:translateY(0) scale(0.98);} .ds-btn:focus-visible{outline:2px solid var(--color-ink-strong);outline-offset:3px;} .ds-btn-ghost{background:transparent;color:var(--color-ink-strong);border-color:var(--color-control);box-shadow:none;} .ds-btn-ghost:hover{background:rgb(255 255 255 / 0.7);border-color:var(--color-ink-strong);box-shadow:none;}"
+    },
+    {
+      "name": "Quiet Action",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "Underlined text action for back, edit and calendar links inside the RSVP.",
+      "html": "<button class=\"ds-btn-quiet\" type=\"button\">Search again</button>",
+      "css": ":host{--color-paper:#fdfbf8;--color-ground:#f7f1eb;--color-blush:#f3e6dd;--color-card:#fffdfa;--color-ink:#a38468;--color-names:#8a6a4f;--color-ink-deep:#7a5b41;--color-ink-strong:#5e4430;--color-muted:#7d6049;--color-line:#e6d9cc;--color-control:#a38468;--color-error:#a4553f;--font-serif:\"Cormorant Garamond\",Georgia,serif;--font-script:\"Pinyon Script\",cursive;--font-sans:\"Jost\",system-ui,sans-serif;--ease-out-expo:cubic-bezier(0.16,1,0.3,1);--radius-card:28px;--radius-field:14px;--shadow-card:0 1px 2px rgb(94 68 48 / 0.04),0 12px 32px -12px rgb(94 68 48 / 0.12),0 40px 80px -48px rgb(94 68 48 / 0.18);} .ds-btn-quiet{display:inline-flex;align-items:center;min-height:44px;padding:0.4em 0.2em;font-family:var(--font-sans);font-size:0.9375rem;color:var(--color-ink-deep);background:none;border:0;cursor:pointer;text-decoration:underline;text-decoration-color:var(--color-control);text-underline-offset:0.35em;} .ds-btn-quiet:hover{color:var(--color-ink-strong);text-decoration-color:currentColor;} .ds-btn-quiet:focus-visible{outline:2px solid var(--color-ink-strong);outline-offset:3px;}"
+    },
+    {
+      "name": "Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Labelled 52px field with a 14px radius and a soft umber focus halo.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">First name</span><input class=\"ds-input\" placeholder=\"Linda\"></label>",
+      "css": ":host{--color-paper:#fdfbf8;--color-ground:#f7f1eb;--color-blush:#f3e6dd;--color-card:#fffdfa;--color-ink:#a38468;--color-names:#8a6a4f;--color-ink-deep:#7a5b41;--color-ink-strong:#5e4430;--color-muted:#7d6049;--color-line:#e6d9cc;--color-control:#a38468;--color-error:#a4553f;--font-serif:\"Cormorant Garamond\",Georgia,serif;--font-script:\"Pinyon Script\",cursive;--font-sans:\"Jost\",system-ui,sans-serif;--ease-out-expo:cubic-bezier(0.16,1,0.3,1);--radius-card:28px;--radius-field:14px;--shadow-card:0 1px 2px rgb(94 68 48 / 0.04),0 12px 32px -12px rgb(94 68 48 / 0.12),0 40px 80px -48px rgb(94 68 48 / 0.18);} .ds-field{display:grid;gap:8px;font-family:var(--font-sans);} .ds-field-label{font-size:0.9375rem;font-weight:500;color:var(--color-ink-strong);} .ds-input{width:100%;min-height:52px;padding:0.65em 1em;font-family:var(--font-sans);font-size:1.0625rem;color:var(--color-ink-strong);background:#fff;border:1px solid var(--color-control);border-radius:var(--radius-field);transition:border-color 150ms,box-shadow 150ms;} .ds-input::placeholder{color:#85684f;opacity:1;} .ds-input:hover{border-color:var(--color-ink);} .ds-input:focus{outline:none;border-color:var(--color-ink-strong);box-shadow:0 0 0 4px rgb(94 68 48 / 0.12);}"
+    },
+    {
+      "name": "Answer Choice",
+      "kind": "chip",
+      "refersTo": "choice",
+      "description": "Large tappable RSVP answer tile; selected fills with blush and doubles its ink border.",
+      "html": "<div class=\"ds-choices\"><label class=\"ds-choice\"><input type=\"radio\" name=\"a\" checked><span>Joyfully accepts</span></label><label class=\"ds-choice\"><input type=\"radio\" name=\"a\"><span>Regretfully declines</span></label></div>",
+      "css": ":host{--color-paper:#fdfbf8;--color-ground:#f7f1eb;--color-blush:#f3e6dd;--color-card:#fffdfa;--color-ink:#a38468;--color-names:#8a6a4f;--color-ink-deep:#7a5b41;--color-ink-strong:#5e4430;--color-muted:#7d6049;--color-line:#e6d9cc;--color-control:#a38468;--color-error:#a4553f;--font-serif:\"Cormorant Garamond\",Georgia,serif;--font-script:\"Pinyon Script\",cursive;--font-sans:\"Jost\",system-ui,sans-serif;--ease-out-expo:cubic-bezier(0.16,1,0.3,1);--radius-card:28px;--radius-field:14px;--shadow-card:0 1px 2px rgb(94 68 48 / 0.04),0 12px 32px -12px rgb(94 68 48 / 0.12),0 40px 80px -48px rgb(94 68 48 / 0.18);} .ds-choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;} .ds-choice{position:relative;display:flex;align-items:center;justify-content:center;min-height:56px;padding:0.6em 1em;text-align:center;background:#fff;border:1px solid var(--color-line);border-radius:var(--radius-field);cursor:pointer;font-family:var(--font-serif);font-size:1.375rem;font-weight:500;line-height:1.3;color:var(--color-ink-deep);transition:background-color 180ms var(--ease-out-expo),border-color 180ms,box-shadow 180ms,transform 160ms var(--ease-out-expo);} .ds-choice input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer;} .ds-choice:hover{border-color:var(--color-control);transform:translateY(-1px);} .ds-choice:active{transform:scale(0.98);} .ds-choice:has(input:checked){background:var(--color-blush);border-color:var(--color-ink-strong);color:var(--color-ink-strong);box-shadow:inset 0 0 0 1px var(--color-ink-strong);} .ds-choice:has(input:focus-visible){outline:2px solid var(--color-ink-strong);outline-offset:3px;}"
+    },
+    {
+      "name": "Soft Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "28px card at 88% card white with the warm three-layer shadow; shown as a venue card headed by its icon tile.",
+      "html": "<article class=\"ds-card\"><span class=\"ds-card-icon\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 2.5v4M10 4.5h4M7 21V11l5-4.5 5 4.5v10M4 21h16M10.5 21v-4a1.5 1.5 0 0 1 3 0v4\"/></svg></span><h3 class=\"ds-card-label\">Church Ceremony</h3><p class=\"ds-card-time\">2:00 PM</p><p class=\"ds-card-name\">St. Sava Serbian Orthodox Church</p><p class=\"ds-card-addr\">Street, City</p></article>",
+      "css": ":host{--color-paper:#fdfbf8;--color-ground:#f7f1eb;--color-blush:#f3e6dd;--color-card:#fffdfa;--color-ink:#a38468;--color-names:#8a6a4f;--color-ink-deep:#7a5b41;--color-ink-strong:#5e4430;--color-muted:#7d6049;--color-line:#e6d9cc;--color-control:#a38468;--color-error:#a4553f;--font-serif:\"Cormorant Garamond\",Georgia,serif;--font-script:\"Pinyon Script\",cursive;--font-sans:\"Jost\",system-ui,sans-serif;--ease-out-expo:cubic-bezier(0.16,1,0.3,1);--radius-card:28px;--radius-field:14px;--shadow-card:0 1px 2px rgb(94 68 48 / 0.04),0 12px 32px -12px rgb(94 68 48 / 0.12),0 40px 80px -48px rgb(94 68 48 / 0.18);} .ds-card{display:flex;flex-direction:column;align-items:center;max-width:420px;padding:40px 32px;text-align:center;background:rgb(255 253 250 / 0.88);border:1px solid rgb(230 217 204 / 0.7);border-radius:var(--radius-card);box-shadow:var(--shadow-card);font-family:var(--font-sans);transition:transform 300ms var(--ease-out-expo);} .ds-card:hover{transform:translateY(-2px);} .ds-card-icon{display:grid;place-items:center;width:52px;height:52px;border-radius:999px;background:var(--color-blush);color:var(--color-ink-strong);} .ds-card-icon svg{width:22px;height:22px;} .ds-card-label{margin:20px 0 0;font-family:var(--font-serif);font-size:1.125rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-ink-strong);} .ds-card-time{margin:6px 0 0;font-family:var(--font-serif);font-size:2.5rem;font-weight:500;line-height:1.1;color:var(--color-ink-strong);} .ds-card-name{margin:14px 0 0;font-family:var(--font-serif);font-size:1.5rem;font-weight:600;line-height:1.25;color:var(--color-ink-strong);} .ds-card-addr{margin:4px 0 0;font-size:1.0625rem;color:var(--color-ink-deep);}"
+    },
+    {
+      "name": "Scroll-Filled Nav",
+      "kind": "nav",
+      "refersTo": "nav-scrolled",
+      "description": "Fixed 64px bar, transparent over the hero, filling with blurred paper once scrolled; shown filled.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-mark\" href=\"#top\">Linda &amp; Marko</a><div class=\"ds-nav-links\"><a class=\"ds-nav-link\" href=\"#w\">When &amp; Where</a><a class=\"ds-nav-link\" href=\"#r\">RSVP</a><a class=\"ds-nav-pill\" href=\"#r\">Reply now</a></div></nav>",
+      "css": ":host{--color-paper:#fdfbf8;--color-ground:#f7f1eb;--color-blush:#f3e6dd;--color-card:#fffdfa;--color-ink:#a38468;--color-names:#8a6a4f;--color-ink-deep:#7a5b41;--color-ink-strong:#5e4430;--color-muted:#7d6049;--color-line:#e6d9cc;--color-control:#a38468;--color-error:#a4553f;--font-serif:\"Cormorant Garamond\",Georgia,serif;--font-script:\"Pinyon Script\",cursive;--font-sans:\"Jost\",system-ui,sans-serif;--ease-out-expo:cubic-bezier(0.16,1,0.3,1);--radius-card:28px;--radius-field:14px;--shadow-card:0 1px 2px rgb(94 68 48 / 0.04),0 12px 32px -12px rgb(94 68 48 / 0.12),0 40px 80px -48px rgb(94 68 48 / 0.18);} .ds-nav{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px;padding:0 20px;background:rgb(253 251 248 / 0.86);backdrop-filter:saturate(1.2) blur(14px);border-bottom:1px solid var(--color-line);box-shadow:0 8px 24px -20px rgb(94 68 48 / 0.35);font-family:var(--font-sans);} .ds-nav-mark{font-family:var(--font-script);font-size:1.75rem;line-height:1;color:var(--color-ink-strong);text-decoration:none;} .ds-nav-links{display:flex;align-items:center;gap:24px;} .ds-nav-link{position:relative;display:inline-flex;align-items:center;min-height:44px;padding-inline:4px;font-size:0.8125rem;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;text-decoration:none;color:var(--color-ink-deep);} .ds-nav-link::after{content:\"\";position:absolute;left:4px;right:calc(4px + 0.22em);bottom:10px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform 300ms var(--ease-out-expo);} .ds-nav-link:hover::after{transform:scaleX(1);} .ds-nav-link:focus-visible,.ds-nav-pill:focus-visible{outline:2px solid var(--color-ink-strong);outline-offset:3px;} .ds-nav-pill{display:inline-flex;align-items:center;min-height:44px;padding:0.55em 1.35em;border-radius:999px;background:var(--color-ink-strong);color:#fffdfa;font-size:0.9375rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;box-shadow:0 10px 24px -14px rgb(94 68 48 / 0.6);transition:background-color 200ms var(--ease-out-expo),transform 160ms var(--ease-out-expo);} .ds-nav-pill:hover{background:#4f3826;transform:translateY(-1px);}"
+    },
+    {
+      "name": "Invitation Lockup",
+      "kind": "custom",
+      "refersTo": "display",
+      "description": "The hero's type stack: opening caps, names in script between hairlines, the italic lead, gradient rule, and the date in Cormorant caps.",
+      "html": "<div class=\"ds-lockup\"><p class=\"ds-together\">Together with their families</p><h1 class=\"ds-names\"><span>Linda Todorovski</span><span class=\"ds-amp\">&amp;</span><span>Marko Pupavac</span></h1><p class=\"ds-lead\">invite you to join them as they celebrate their marriage on</p><div class=\"ds-rule\"></div><p class=\"ds-date\">Saturday, May 15<span class=\"ds-ord\">th</span>, 2027</p></div>",
+      "css": ":host{--color-paper:#fdfbf8;--color-ground:#f7f1eb;--color-blush:#f3e6dd;--color-card:#fffdfa;--color-ink:#a38468;--color-names:#8a6a4f;--color-ink-deep:#7a5b41;--color-ink-strong:#5e4430;--color-muted:#7d6049;--color-line:#e6d9cc;--color-control:#a38468;--color-error:#a4553f;--font-serif:\"Cormorant Garamond\",Georgia,serif;--font-script:\"Pinyon Script\",cursive;--font-sans:\"Jost\",system-ui,sans-serif;--ease-out-expo:cubic-bezier(0.16,1,0.3,1);--radius-card:28px;--radius-field:14px;--shadow-card:0 1px 2px rgb(94 68 48 / 0.04),0 12px 32px -12px rgb(94 68 48 / 0.12),0 40px 80px -48px rgb(94 68 48 / 0.18);} .ds-lockup{max-width:820px;margin:0 auto;padding:48px 20px;text-align:center;background:radial-gradient(40% 32% at 50% 46%,rgb(243 230 221 / 0.32),transparent 72%),var(--color-paper);} .ds-together{margin:0;font-family:var(--font-serif);font-size:1.2rem;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-ink-deep);} .ds-names{margin:24px 0 0;font-family:var(--font-script);font-weight:400;font-size:clamp(2.6rem,1.4rem + 6vw,5rem);line-height:1.02;color:var(--color-names);} .ds-names span{display:block;} .ds-names .ds-amp{display:flex;align-items:center;justify-content:center;gap:0.35em;font-size:0.85em;line-height:1.1;color:var(--color-ink);} .ds-amp::before,.ds-amp::after{content:\"\";width:min(18vw,140px);height:1px;background:var(--color-line);} .ds-lead{margin:22px 0 0;font-family:var(--font-serif);font-style:italic;font-size:clamp(1.25rem,1.05rem + 0.8vw,1.6rem);color:var(--color-ink-deep);} .ds-rule{width:120px;height:1px;margin:28px auto;background:linear-gradient(90deg,transparent,var(--color-control),transparent);} .ds-date{margin:0;font-family:var(--font-serif);font-size:clamp(1.4rem,1.1rem + 1vw,1.9rem);font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-ink-strong);} .ds-ord{font-size:0.62em;vertical-align:0.42em;letter-spacing:0.04em;}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Inside the Invitation",
+    "overview": "The site is the printed invitation's world, not a picture of the invitation. The page itself is the card stock: a full-bleed ivory sheet (paper) that warms toward a soft ground below the hero, with faint blush glows pooled at left and right. The invitation's embossed white peonies are lifted off the print and set at the screen's own corners, top-left and bottom-right, so the browser window becomes the frame. The page closes the way the card does, on the bottom-right peony again at the footer.\n\nEverything is set in one warm taupe-umber ink at five strengths, with three faces doing strictly separate jobs: a formal script for names, Cormorant Garamond for the invitation's voice, and Jost for everything a guest reads or taps. Interactive surfaces are soft and modern (28px cards, pill buttons, 14px fields) so the RSVP feels easy on a phone without breaking the stationery mood. Motion is a slow breath: the peonies bloom open, then sway in a light breeze.\n\nThe build was code-led with no image generation. The only imagery is the invitation's own peonies, extracted from the print by `scripts/extract-florals.mjs` as shadow-only alpha (the embossed shading without the white card), so they sit on any ground. These rasters are placeholders until the designer's original floral files arrive. The world explicitly refuses the card-on-a-page presentation (a framed invitation floating on a backdrop) and the stock wedding template's photo hero and countdown. The one borrowed device is the venue icon tile, kept by the user's choice to match the reference site thevanschatz.com: a single-stroke SVG in a blush circle heading each venue card.",
+    "keyCharacteristics": [
+      "Full-bleed ivory page; no frame, no backdrop behind a card-shaped invitation.",
+      "Peonies anchored to the viewport corners in the hero, and to the bottom-right corner at the footer close.",
+      "One warm ink family at five strengths; no second hue except a muted terracotta for errors.",
+      "Script for names only; Cormorant for the invitation's voice; Jost for reading and tapping.",
+      "Soft, warm-shadowed cards and pill buttons for the functional parts.",
+      "Bloom, then breeze: entrance motion is slow and the idle motion is barely there."
+    ],
+    "rules": [
+      {
+        "name": "The Ink Ladder Rule",
+        "body": "All text and strokes come from one umber family, chosen by job: names (names), body (ink-deep), headings and buttons (ink-strong), secondary (muted), field strokes (control). Pick the step by role and contrast, never by mood.",
+        "section": "colors"
+      },
+      {
+        "name": "The Print Taupe Is Large Rule",
+        "body": "The invitation's literal taupe (ink) carries text only at script sizes. Anything under display size steps down to ink-deep or darker.",
+        "section": "colors"
+      },
+      {
+        "name": "The Names Only Rule",
+        "body": "Pinyon Script sets names and nothing else: the couple's names, their monogram, and a guest party's own name when greeting them. Never a heading, label, or decorative word.",
+        "section": "typography"
+      },
+      {
+        "name": "The Two Registers Rule",
+        "body": "Cormorant caps are for lines the invitation prints and the labels that name them (date, venues, the opening line, venue card headings, the footer date); Cormorant italic is for lines it speaks (section titles, the lead, \"With love,\"). Jost is for everything a guest reads to act or taps.",
+        "section": "typography"
+      },
+      {
+        "name": "The Screen Is the Card Rule",
+        "body": "Ornament anchors to the viewport's corners, not to a box inside the page. Peonies sit at top: 0 / left: 0 and right: 0 / bottom: 0 of full-width sections and bleed off the edge.",
+        "section": "layout"
+      },
+      {
+        "name": "The Warm Shadow Rule",
+        "body": "Shadows are always umber-tinted, long and soft, with negative spread. Ghost buttons, fields at rest and the page itself carry none.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** let the page be the invitation: full-bleed paper to ground gradient, peonies anchored at the viewport's corners and bleeding off the edge.",
+      "**Do** pick text color from the ink ladder by role: names ink for the couple's names (hero and footer), ink-deep for body, ink-strong for headings and buttons, muted for secondary lines, control for field strokes.",
+      "**Do** keep Pinyon Script for names only, Cormorant caps for printed invitation lines and their labels (venue headings, footer date), Cormorant italic for section titles and lead lines, and Jost for body, nav links, field labels and buttons.",
+      "**Do** head each venue card with its single-stroke icon in a 52px blush circle, and keep the device to the venue cards.",
+      "**Do** use 28px cards with the warm three-layer card shadow, pill buttons (filled for the main action, ghost beside it), and 14px fields at 52px tall.",
+      "**Do** tint every shadow umber (`rgb(94 68 48 / ...)`) and use expo-out easing for purposeful motion.",
+      "**Do** pause idle motion off screen and give every animation a plain-fade reduced-motion path.",
+      "**Do** keep reading text at 1.0625rem or larger and every target at 44px or taller."
+    ],
+    "donts": [
+      "**Don't** present the invitation as a framed card or picture floating on a backdrop; the screen is the card.",
+      "**Don't** fall back to the stock wedding template's photo hero or countdown.",
+      "**Don't** set any heading, label or decorative word in Pinyon Script.",
+      "**Don't** use the print taupe (ink) for text below display size; it is 3.4:1.",
+      "**Don't** use neutral grey or black shadows, or shadows on the page itself.",
+      "**Don't** introduce a second accent hue; blush is a glow and a selection fill, terracotta is for errors only."
+    ]
+  }
+}
