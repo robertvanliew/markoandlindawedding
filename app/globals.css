@@ -544,8 +544,26 @@ a {
 
 /* ---------- Sections ---------- */
 
+/* Below the hero the content sits on a sheet of ivory paper laid over the church: the church stays
+   faintly visible, but no longer competes with cards and text. */
+.page-sheet {
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    rgb(251 248 243 / 0) 0,
+    rgb(251 248 243 / 0.84) clamp(120px, 18vh, 220px),
+    rgb(251 248 243 / 0.84) 100%
+  );
+}
+
+/* One section per screen: each fills the viewport with its content centred, so nothing floats
+   in a half-empty band. */
 .section {
-  padding-block: clamp(56px, 8vh, 96px);
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-block: clamp(96px, 13vh, 150px);
 }
 .section-head {
   position: relative;
@@ -705,7 +723,8 @@ a {
 /* ---------- RSVP ---------- */
 
 .rsvp-card {
-  max-width: 680px;
+  width: 100%;
+  max-width: 720px;
   margin-inline: auto;
   padding: clamp(28px, 5vw, 56px) clamp(20px, 5vw, 56px);
 }
@@ -906,8 +925,13 @@ a {
 
 .footer {
   position: relative;
-  z-index: 65; /* text above the flowers and petals */
-  padding: clamp(56px, 9vh, 96px) 20px clamp(150px, 24vh, 240px);
+  z-index: 65; /* text above the flowers */
+  min-height: 72svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(64px, 10vh, 120px) 20px clamp(160px, 26vh, 260px);
   text-align: center;
   isolation: isolate;
   overflow: clip;
@@ -919,8 +943,23 @@ a {
   font-size: 1.25rem;
   color: var(--color-muted);
 }
+.footer-rule {
+  display: block;
+  width: 96px;
+  height: 1px;
+  margin-bottom: 28px;
+  background: linear-gradient(90deg, transparent, var(--color-gilt), transparent);
+}
+.footer-venues {
+  margin-top: 8px;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.125rem;
+  color: var(--color-muted);
+}
 .footer-names {
-  font-size: clamp(2.75rem, 2rem + 3vw, 4rem);
+  margin-top: 6px;
+  font-size: clamp(3.25rem, 2rem + 4.5vw, 5.5rem);
   line-height: 1.1;
   color: var(--color-names);
 }

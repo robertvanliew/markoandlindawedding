@@ -22,11 +22,13 @@ export default async function PersonalRsvp({ params }: { params: Promise<{ token
       <SiteNav />
       <FlowerFrame />
       <Hero />
+      <div className="page-sheet">
       <main>
         <Details />
         <RsvpSection invite={invite} />
       </main>
       <Footer />
+      </div>
     </>
   );
 }

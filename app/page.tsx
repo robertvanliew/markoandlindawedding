@@ -16,11 +16,13 @@ export default function Home() {
       <SiteNav />
       <FlowerFrame />
       <Hero />
+      <div className="page-sheet">
       <main>
         <Details />
         <RsvpSection />
       </main>
       <Footer />
+      </div>
     </>
   );
 }
