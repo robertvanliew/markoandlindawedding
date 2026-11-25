@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, useTransition } from "react";
-import { lookupInvite, loadInvite, submitRsvp, type InviteView, type SubmitResult } from "@/app/actions";
+import { submitRsvp, type InviteView, type SubmitResult } from "@/app/actions";
 import { DATE_LABEL, MEALS, RSVP_DEADLINE_LABEL, VENUES, type Meal } from "@/lib/wedding";
 
-type Phase = "find" | "pick" | "answered" | "reply" | "done";
+type Phase = "answered" | "reply" | "done";
 type GuestDraft = { full_name: string; meal: Meal | ""; dietary_notes: string };
 type Errors = Record<string, string>;
 
@@ -12,24 +12,22 @@ const SUBMIT_ERRORS: Record<Exclude<SubmitResult, { ok: true }>["error"], string
   closed: "RSVPs are now closed, please contact Linda and Marko directly.",
   invalid: "Something in the form needs another look. Please check each guest and try again.",
   limited: "Too many attempts in a short time. Please wait a minute and try again.",
-  not_found: "We couldn't find your invitation any more. Please search for your name again.",
+  not_found: "This invitation link is no longer valid. Please contact Linda and Marko.",
   too_many: "That is more guests than the seats reserved for your party.",
 };
 
 const mealLabel = (m: string) => MEALS.find((x) => x.value === m)?.label ?? m;
 
-export function RsvpForm({ initialInvite = null, closed = false }: { initialInvite?: InviteView | null; closed?: boolean }) {
+/** The reply form, reached only through a party's personal invitation link. */
+export function RsvpForm({ initialInvite, closed = false }: { initialInvite: InviteView; closed?: boolean }) {
   const uid = useId();
-  const [phase, setPhase] = useState<Phase>(initialInvite ? (initialInvite.response ? "answered" : "reply") : "find");
-  const [invite, setInvite] = useState<InviteView | null>(initialInvite);
-  const [options, setOptions] = useState<{ token: string; party_name: string }[]>([]);
-  const [picked, setPicked] = useState("");
-  const [first, setFirst] = useState("");
-  const [last, setLast] = useState("");
+  const [phase, setPhase] = useState<Phase>(initialInvite.response ? "answered" : "reply");
+  const [invite, setInvite] = useState<InviteView>(initialInvite);
   const [honey, setHoney] = useState("");
-  const [attending, setAttending] = useState<boolean | null>(null);
-  const [guests, setGuests] = useState<GuestDraft[]>([]);
-  const [email, setEmail] = useState("");
+  const draftFrom = (inv: InviteView) => inv.response?.guests.map((g) => ({ full_name: g.full_name, meal: g.meal, dietary_notes: g.dietary_notes ?? "" })) ?? [{ full_name: "", meal: "" as const, dietary_notes: "" }];
+  const [attending, setAttending] = useState<boolean | null>(initialInvite.response?.attending ?? null);
+  const [guests, setGuests] = useState<GuestDraft[]>(draftFrom(initialInvite));
+  const [email, setEmail] = useState(initialInvite.response?.contact_email ?? "");
   const [errors, setErrors] = useState<Errors>({});
   const [message, setMessage] = useState<{ tone: "info" | "error"; text: string } | null>(null);
   const [pending, startTransition] = useTransition();
@@ -47,12 +45,6 @@ export function RsvpForm({ initialInvite = null, closed = false }: { initialInvi
     setPhase(p);
   };
 
-  function openInvite(inv: InviteView) {
-    setInvite(inv);
-    if (inv.response) return go("answered");
-    startReply(inv);
-  }
-
   function startReply(inv: InviteView) {
     const r = inv.response;
     if (r) {
@@ -61,8 +53,7 @@ export function RsvpForm({ initialInvite = null, closed = false }: { initialInvi
       setEmail(r.contact_email ?? "");
     } else {
       setAttending(null);
-      const typed = `${first.trim()} ${last.trim()}`.trim();
-      setGuests([{ full_name: typed, meal: "", dietary_notes: "" }]);
+      setGuests([{ full_name: "", meal: "", dietary_notes: "" }]);
     }
     go("reply");
   }
@@ -85,53 +76,8 @@ export function RsvpForm({ initialInvite = null, closed = false }: { initialInvi
     if (first) requestAnimationFrame(() => document.getElementById(`${uid}-${first}`)?.focus());
   }
 
-  function onFind(e: React.FormEvent) {
-    e.preventDefault();
-    const errs: Errors = {};
-    if (!first.trim()) errs.first = "Please enter your first name.";
-    if (!last.trim()) errs.last = "Please enter your last name.";
-    setErrors(errs);
-    setMessage(null);
-    if (Object.keys(errs).length) return focusFirstError(errs);
-
-    startTransition(async () => {
-      try {
-        const res = await lookupInvite({ first, last, website: honey });
-        if (res.status === "one") openInvite(res.invite);
-        else if (res.status === "many") {
-          setOptions(res.options);
-          setPicked("");
-          go("pick");
-        } else if (res.status === "limited") {
-          setMessage({ tone: "error", text: "Too many searches in a short time. Please wait a minute and try again." });
-        } else {
-          setMessage({
-            tone: "error",
-            text: "We couldn't find an invitation under that name. Please check the spelling, try the name on your invitation, or contact Linda and Marko.",
-          });
-        }
-      } catch {
-        setMessage({ tone: "error", text: "We couldn't reach the guest list just now. Please try again in a moment." });
-      }
-    });
-  }
-
-  function onPick(e: React.FormEvent) {
-    e.preventDefault();
-    if (!picked) {
-      setErrors({ pick: "Please choose your party." });
-      return focusFirstError({ pick: "x" });
-    }
-    startTransition(async () => {
-      const inv = await loadInvite(picked).catch(() => null);
-      if (inv) openInvite(inv);
-      else setMessage({ tone: "error", text: "We couldn't open that invitation. Please try again." });
-    });
-  }
-
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!invite) return;
     const errs: Errors = {};
     if (attending === null) errs.attending = "Please let us know if you will be attending.";
     if (attending) {
@@ -182,9 +128,9 @@ export function RsvpForm({ initialInvite = null, closed = false }: { initialInvi
   });
 
   const live = (
-    <div aria-live="polite" role="status">
+    <div aria-live="polite" role="status" className="live-region">
       {message && (
-        <p className="notice mt-6" data-tone={message.tone}>
+        <p className="notice" data-tone={message.tone}>
           {message.text}
         </p>
       )}
@@ -215,81 +161,6 @@ export function RsvpForm({ initialInvite = null, closed = false }: { initialInvi
       </div>
     );
   }
-
-  // ---------- Step 0: find your invitation ----------
-  if (phase === "find") {
-    return (
-      <form onSubmit={onFind} noValidate className="step-enter grid gap-6" aria-busy={pending}>
-        <div>
-          {heading("Find your invitation")}
-          <p className="step-note">Enter your name as it appears on your invitation.</p>
-        </div>
-        <div className="grid gap-5 sm:grid-cols-2">
-          <div className="field">
-            <label className="field-label" htmlFor={`${uid}-first`}>
-              First name
-            </label>
-            <input className="input" {...errProps("first")} autoComplete="given-name" value={first} onChange={(e) => setFirst(e.target.value)} />
-            {err("first")}
-          </div>
-          <div className="field">
-            <label className="field-label" htmlFor={`${uid}-last`}>
-              Last name
-            </label>
-            <input className="input" {...errProps("last")} autoComplete="family-name" value={last} onChange={(e) => setLast(e.target.value)} />
-            {err("last")}
-          </div>
-        </div>
-        {honeypot}
-        <div className="text-center">
-          <button className="btn" type="submit" aria-busy={pending} disabled={pending}>
-            {pending ? "Searching…" : "Find my invitation"}
-          </button>
-        </div>
-        {live}
-      </form>
-    );
-  }
-
-  // ---------- Several parties share the name ----------
-  if (phase === "pick") {
-    return (
-      <form onSubmit={onPick} noValidate className="step-enter grid gap-6">
-        <div>
-          {heading("Which invitation is yours?")}
-          <p className="step-note">More than one invitation matches that name.</p>
-        </div>
-        <fieldset className="choice-group" aria-describedby={errors.pick ? `${uid}-pick-err` : undefined}>
-          <legend className="sr-only">Choose your party</legend>
-          {options.map((o, i) => (
-            <label key={o.token} className="choice">
-              <input
-                type="radio"
-                name="party"
-                value={o.token}
-                id={i === 0 ? `${uid}-pick` : undefined}
-                checked={picked === o.token}
-                onChange={() => setPicked(o.token)}
-              />
-              {o.party_name}
-            </label>
-          ))}
-        </fieldset>
-        {err("pick")}
-        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-          <button className="btn" type="submit" disabled={pending} aria-busy={pending}>
-            {pending ? "Opening…" : "Continue"}
-          </button>
-          <button className="btn-quiet" type="button" onClick={() => go("find")}>
-            Search again
-          </button>
-        </div>
-        {live}
-      </form>
-    );
-  }
-
-  if (!invite) return null;
 
   // ---------- Already answered / confirmation ----------
   if (phase === "answered" || phase === "done") {
@@ -494,11 +365,6 @@ export function RsvpForm({ initialInvite = null, closed = false }: { initialInvi
         <button className="btn" type="submit" disabled={pending} aria-busy={pending}>
           {pending ? "Sending…" : attending === false ? "Send our reply" : "Send RSVP"}
         </button>
-        {!initialInvite && (
-          <button className="btn-quiet" type="button" onClick={() => go("find")}>
-            Not you? Search again
-          </button>
-        )}
       </div>
       {live}
     </form>

@@ -25,15 +25,16 @@ It is the printed invitation brought to life, not a wedding template: the same w
 
 ## Operating Context
 
-- Guests arrive via a generic link or a personal link (`/rsvp/[token]`) that skips the name lookup and greets the party by name.
-- RSVP flow: find invitation by name (with alias and diacritic-insensitive matching, e.g. Đorđević = Djordjevic) → attending yes/no → guest count (1 to `max_guests`) → one meal per guest → optional dietary note per guest → confirmation with calendar links. Answers stay editable until the deadline.
-- The couple works from `/admin` (not linked, `noindex`): totals, filterable table, CSV export of attending guests and of non-responders, invite CRUD, CSV import of the guest list.
+- **Replies only through personal links** (decided Nov 2026, for privacy): Linda sends each party its invitation email from `/admin`, carrying a personal link (`/rsvp/[token]`) that opens straight onto that party's reply. The public site has no name or email search, so nobody can look up who is invited.
+- RSVP flow (from the personal link): attending yes/no → guest count (1 to `max_guests`) → one meal per guest → optional dietary note per guest → confirmation with calendar links. Answers stay editable until the deadline.
+- The couple works from `/admin` (password, not linked, `noindex`): totals and meal counts, filterable table, add/edit/remove parties, CSV import, send or resend invitation emails (Resend), copy each party's link, CSV export of attending guests and of non-responders, and a "delete all guest data" button for after the wedding.
+- Data kept: party name, email, seats, and the reply (attending, guest names, meals, dietary notes, optional contact email). Nothing else.
 - Wedding facts (verbatim, from the brief): Saturday, May 15th, 2027. Church ceremony 1:00 PM, St. Sava Serbian Orthodox Church, 1375 Blundell Rd., Mississauga, ON. Reception 5:30 PM, Château Le Jardin, 8440 Hwy 27, Woodbridge, ON. RSVP by March 15th, 2027 (end of day, America/Toronto).
 
 ## Capabilities and Constraints
 
 - Single scrolling page `/` (hero invitation, details, RSVP, footer), `/rsvp/[token]`, `/admin`. No registry, song picker, video page, story, hotel block or dress code unless added to the brief.
-- Seat cap enforced in the UI (stepper/select, never free text) and on the server. One response per invite; resubmitting updates it. Lookup never reveals or enumerates the guest list. Honeypot and rate limiting on lookup and submit.
+- Seat cap enforced in the UI (stepper/select, never free text) and on the server. One response per invite; resubmitting updates it. Honeypot and rate limiting on lookup and submit.
 - Meals: Chicken, Beef, Veggie. **The celebration is adults only** (confirmed by the bride, Nov 2026): no Kids' Meal, and the RSVP says so. The `kids_allowed` column is kept in the schema but unused.
 - After the deadline the form becomes read only with a "please contact Linda and Marko directly" message.
 - `noindex, nofollow` sitewide; no analytics or third-party trackers.

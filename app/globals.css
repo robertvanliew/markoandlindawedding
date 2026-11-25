@@ -726,7 +726,21 @@ a {
   width: 100%;
   max-width: 720px;
   margin-inline: auto;
-  padding: clamp(28px, 5vw, 56px) clamp(20px, 5vw, 56px);
+  padding: clamp(32px, 5vw, 52px) clamp(22px, 5vw, 56px);
+}
+/* The status line stays in the page for screen readers but takes no room until it has a message. */
+.live-region:empty {
+  position: absolute;
+}
+
+.rsvp-link-only {
+  display: grid;
+  gap: 4px;
+  padding-block: 8px;
+}
+.rsvp-link-only .step-note {
+  max-width: 46ch;
+  margin-inline: auto;
 }
 
 .step-heading {
@@ -1128,5 +1142,350 @@ a {
   .choice:hover,
   .venue-card:hover {
     transform: none;
+  }
+}
+
+/* ---------- Admin: guest list ---------- */
+
+.admin-login {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 24px 20px;
+}
+.admin-login-card {
+  display: grid;
+  gap: 20px;
+  width: min(100%, 420px);
+  padding: 40px 32px;
+  text-align: center;
+}
+.admin-login-card .field {
+  text-align: left;
+}
+.admin-mark {
+  font-size: 2.25rem;
+  line-height: 1.1;
+  color: var(--color-names);
+}
+.admin-title {
+  font-family: var(--font-serif);
+  font-size: 1.625rem;
+  font-weight: 600;
+  color: var(--color-ink-strong);
+}
+
+.admin {
+  width: min(100% - 40px, 1240px);
+  margin-inline: auto;
+  padding-block: 40px 80px;
+  display: grid;
+  gap: 24px;
+}
+.admin-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+.admin-head .admin-mark {
+  font-size: 1.75rem;
+}
+.admin-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.admin-banners {
+  display: grid;
+  gap: 10px;
+}
+.admin-banners .notice {
+  text-align: left;
+}
+
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+.admin-stat {
+  display: grid;
+  gap: 2px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: #fffdfa;
+  border: 1px solid #ebdfd1;
+  font-size: 0.9375rem;
+  color: var(--color-muted);
+}
+.admin-stat > span {
+  font-family: var(--font-serif);
+  font-size: 2.25rem;
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--color-ink-strong);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.admin-stat--meals {
+  grid-column: span 2;
+}
+.admin-meals {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  font-family: var(--font-sans) !important;
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
+}
+.admin-meals em {
+  font-style: normal;
+}
+.admin-meals b {
+  font-family: var(--font-serif);
+  font-size: 1.375rem;
+  font-weight: 600;
+}
+
+.admin-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.admin-search {
+  flex: 1 1 240px;
+  min-height: 44px;
+}
+.admin-filter {
+  flex: 0 1 240px;
+  min-height: 44px;
+}
+.admin-toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.admin-send {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-radius: 16px;
+  background: rgb(247 241 235 / 0.8);
+  border: 1px solid var(--color-line);
+}
+.admin-send p {
+  margin-right: auto;
+  color: var(--color-muted);
+}
+.btn[disabled] {
+  pointer-events: none;
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+  border-radius: 20px;
+  border: 1px solid #ebdfd1;
+  background: #fffdfa;
+}
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+.admin-table th {
+  padding: 14px 14px;
+  text-align: left;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  border-bottom: 1px solid var(--color-line);
+  white-space: nowrap;
+}
+.admin-table td {
+  padding: 14px 14px;
+  vertical-align: top;
+  border-bottom: 1px solid #f1e8de;
+  color: var(--color-ink-deep);
+}
+.admin-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+.admin-table tr[data-selected="true"] td {
+  background: rgb(243 230 221 / 0.45);
+}
+.admin-table strong {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 1.1875rem;
+  font-weight: 600;
+  color: var(--color-ink-strong);
+}
+.admin-table small {
+  display: block;
+  color: var(--color-muted);
+  font-size: 0.875rem;
+}
+.admin-check {
+  width: 44px;
+}
+.admin-check input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-ink-strong);
+}
+.admin-muted {
+  color: var(--color-muted);
+}
+.admin-pill {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  background: #f4eee7;
+  color: var(--color-muted);
+}
+.admin-pill[data-status="attending"] {
+  background: #e7efe4;
+  color: #3f5a37;
+}
+.admin-pill[data-status="declined"] {
+  background: #f6e6e1;
+  color: #8c4532;
+}
+.admin-guests {
+  display: grid;
+  gap: 6px;
+}
+.admin-guests b {
+  font-weight: 500;
+}
+.admin-row-actions {
+  white-space: nowrap;
+}
+.admin-row-actions .btn-quiet {
+  min-height: 36px;
+  margin-right: 10px;
+  font-size: 0.875rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.admin-row-actions .btn-quiet[disabled] {
+  opacity: 0.4;
+  pointer-events: none;
+}
+.admin-danger {
+  color: var(--color-error) !important;
+}
+.admin-empty {
+  padding: 48px 16px !important;
+  text-align: center;
+  color: var(--color-muted) !important;
+}
+.admin-help {
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
+.admin-help code {
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: #f4eee7;
+  font-size: 0.8125rem;
+}
+.field-hint {
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
+
+.admin-dialog {
+  width: min(100% - 32px, 560px);
+  padding: 32px;
+  border: 1px solid #ebdfd1;
+  color: var(--color-ink-deep);
+}
+.admin-dialog::backdrop {
+  background: rgb(60 44 32 / 0.35);
+  backdrop-filter: blur(2px);
+}
+.admin-dialog .step-heading {
+  text-align: left;
+}
+
+/* Phones: each party becomes a card with labelled lines. */
+@media (max-width: 760px) {
+  .admin-stat--meals {
+    grid-column: auto;
+  }
+  .admin-table thead {
+    display: none;
+  }
+  .admin-table,
+  .admin-table tbody,
+  .admin-table tr,
+  .admin-table td {
+    display: block;
+    width: 100%;
+  }
+  .admin-table tr {
+    position: relative;
+    padding: 14px 16px 10px 52px;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .admin-table td {
+    padding: 3px 0;
+    border: 0;
+  }
+  .admin-table td.admin-check {
+    position: absolute;
+    left: 16px;
+    top: 18px;
+    width: auto;
+  }
+  .admin-table td[data-label]:not([data-label="Party"])::before {
+    content: attr(data-label) ": ";
+    color: var(--color-muted);
+    font-size: 0.8125rem;
+  }
+  .admin-row-actions {
+    white-space: normal;
+    padding-top: 8px !important;
+  }
+}
+
+.admin-danger-zone {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 16px;
+  padding: 20px 22px;
+  border-radius: 18px;
+  border: 1px solid rgb(164 85 63 / 0.35);
+  background: #fdf7f4;
+}
+.admin-danger-zone h2 {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-ink-strong);
+}
+.admin-danger-zone p {
+  color: var(--color-muted);
+}
+.admin-danger-btn {
+  background: var(--color-error);
+  border-color: var(--color-error);
+}
+@media (hover: hover) and (pointer: fine) {
+  .admin-danger-btn:hover {
+    background: #8c4532;
   }
 }

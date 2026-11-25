@@ -2,6 +2,10 @@ import type { InviteView } from "@/app/actions";
 import { RSVP_DEADLINE_LABEL, rsvpOpen } from "@/lib/wedding";
 import { RsvpForm } from "./RsvpForm";
 
+/**
+ * Replies are made only through each party's personal invitation link. The home page has no guest
+ * search, so nobody can look anyone up; it points guests to their invitation email instead.
+ */
 export function RsvpSection({ invite = null }: { invite?: InviteView | null }) {
   const closed = !rsvpOpen();
   return (
@@ -16,7 +20,23 @@ export function RsvpSection({ invite = null }: { invite?: InviteView | null }) {
           </p>
         </div>
         <div className="card rsvp-card">
-          <RsvpForm initialInvite={invite} closed={closed} />
+          {invite ? (
+            <RsvpForm initialInvite={invite} closed={closed} />
+          ) : closed ? (
+            <div className="rsvp-link-only">
+              <h3 className="step-heading">RSVPs are now closed</h3>
+              <p className="step-note">Please contact Linda and Marko directly.</p>
+            </div>
+          ) : (
+            <div className="rsvp-link-only">
+              <h3 className="step-heading">Your personal RSVP link</h3>
+              <p className="step-note">
+                Each invitation was sent by email with its own RSVP button, already set up with your name and the seats reserved for you.
+                Please open your invitation email and tap <strong>RSVP</strong>.
+              </p>
+              <p className="step-note">Can&apos;t find it? Check your spam folder, or ask Linda or Marko to send it again.</p>
+            </div>
+          )}
         </div>
       </div>
     </section>
