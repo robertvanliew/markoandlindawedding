@@ -35,6 +35,11 @@ export function RsvpSection({ invite = null }: { invite?: InviteView | null }) {
                 Please open your invitation email and tap <strong>RSVP</strong>.
               </p>
               <p className="step-note">Can&apos;t find it? Check your spam folder, or ask Linda or Marko to send it again.</p>
+              <p className="rsvp-printed">
+                <a className="btn btn-ghost" href="/rsvp">
+                  Received a printed invitation?
+                </a>
+              </p>
             </div>
           )}
         </div>

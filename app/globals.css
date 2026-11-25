@@ -738,6 +738,23 @@ a {
   gap: 4px;
   padding-block: 8px;
 }
+.rsvp-printed {
+  margin-top: 18px;
+  text-align: center;
+}
+.finder-names {
+  font-size: clamp(2.25rem, 1.6rem + 2.4vw, 3.25rem);
+  line-height: 1.1;
+  color: var(--color-names);
+  margin-bottom: 4px;
+}
+.finder-home {
+  position: relative;
+  z-index: 65;
+  margin-top: 24px;
+  padding-bottom: clamp(120px, 22svh, 220px);
+  text-align: center;
+}
 .rsvp-link-only .step-note {
   max-width: 46ch;
   margin-inline: auto;

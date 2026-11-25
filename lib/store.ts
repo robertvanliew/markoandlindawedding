@@ -42,6 +42,34 @@ export function newToken() {
 
 export const normalizeEmail = (s: string) => s.trim().toLowerCase();
 
+/** Lowercase, strip accents and punctuation; đ → dj so "Đorđević" matches "Djordjevic". */
+export function normalizeName(s: string) {
+  return s
+    .toLowerCase()
+    .replace(/đ/g, "dj")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/**
+ * Every full name an invitation answers to: each person in the party name ("Ana & Petar Jovanović",
+ * "The Đorđević Family") with the shared surname, plus any other names added in the dashboard.
+ */
+function namesFor(invite: Invite): string[] {
+  const names = new Set(invite.aliases.map(normalizeName));
+  const party = invite.party_name.replace(/^the\s+/i, "").replace(/\s+family$/i, "");
+  const people = party.split(/\s*(?:&|\band\b|,)\s*/i).filter(Boolean);
+  const surname = people[people.length - 1]?.trim().split(/\s+/).slice(1).join(" ") ?? "";
+  for (const person of people) {
+    const parts = person.trim().split(/\s+/);
+    names.add(normalizeName(parts.length > 1 ? parts.join(" ") : `${parts[0]} ${surname}`));
+  }
+  return [...names].filter((n) => n.includes(" "));
+}
+
 // ---------------------------------------------------------------- backends
 
 interface Backend {
@@ -220,3 +248,10 @@ export const deleteAllGuestData = () => db.deleteAll();
 export const listResponses = () => db.listResponses();
 export const getResponse = (inviteId: string) => db.getResponse(inviteId);
 export const saveResponse: Backend["saveResponse"] = (inviteId, data) => db.saveResponse(inviteId, data);
+
+/** Exact matches only (after normalising accents and spacing), so the list can't be browsed. */
+export async function findInvitesByName(first: string, last: string): Promise<Invite[]> {
+  const query = normalizeName(`${first} ${last}`);
+  if (!query.includes(" ")) return [];
+  return (await db.listInvites()).filter((inv) => namesFor(inv).includes(query));
+}

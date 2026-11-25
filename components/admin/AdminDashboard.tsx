@@ -185,7 +185,10 @@ export function AdminDashboard({ rows, usingDatabase, emailReady }: { rows: Row[
         </div>
         <div className="admin-head-actions">
           <a className="btn btn-sm btn-ghost" href="/admin/email-preview" target="_blank" rel="noopener">
-            Preview invitation
+            Preview email
+          </a>
+          <a className="btn btn-sm btn-ghost" href="/admin/print" target="_blank" rel="noopener">
+            Printable invitation
           </a>
           <form action={logout}>
             <button className="btn-quiet" type="submit">
@@ -400,14 +403,16 @@ export function AdminDashboard({ rows, usingDatabase, emailReady }: { rows: Row[
                 Party name
               </label>
               <input id="d-party" className="input" value={draft.party_name} onChange={(e) => setDraft({ ...draft, party_name: e.target.value })} placeholder="Ana & Petar Jovanović" required autoFocus />
-              <p className="field-hint">As it should appear on the invitation: &quot;Dear …&quot;</p>
+              <p className="field-hint">
+                Write every guest&apos;s first name with the surname, e.g. &quot;Ana &amp; Petar Jovanović&quot;. Guests with a printed invitation find it by typing their own first and last name.
+              </p>
             </div>
             <div className="grid gap-5 sm:grid-cols-[1fr_120px]">
               <div className="field">
                 <label className="field-label" htmlFor="d-email">
                   Email
                 </label>
-                <input id="d-email" className="input" type="email" value={draft.email} onChange={(e) => setDraft({ ...draft, email: e.target.value })} placeholder="Where the invitation is sent" />
+                <input id="d-email" className="input" type="email" value={draft.email} onChange={(e) => setDraft({ ...draft, email: e.target.value })} placeholder="Leave empty for printed invitations" />
               </div>
               <div className="field">
                 <label className="field-label" htmlFor="d-seats">
@@ -418,9 +423,9 @@ export function AdminDashboard({ rows, usingDatabase, emailReady }: { rows: Row[
             </div>
             <div className="field">
               <label className="field-label" htmlFor="d-aliases">
-                Other names <span className="admin-muted">(optional)</span>
+                Other names guests might type <span className="admin-muted">(optional)</span>
               </label>
-              <input id="d-aliases" className="input" value={draft.aliases} onChange={(e) => setDraft({ ...draft, aliases: e.target.value })} placeholder="e.g. maiden names or nicknames, for your own reference" />
+              <input id="d-aliases" className="input" value={draft.aliases} onChange={(e) => setDraft({ ...draft, aliases: e.target.value })} placeholder="e.g. Ana Petrović; Peter Jovanovic" />
             </div>
             {draftError && (
               <p className="notice" data-tone="error" role="alert">

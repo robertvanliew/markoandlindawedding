@@ -19,3 +19,6 @@ next-env.d.ts
 .gemini/
 .mcp.json
 .claude/settings.local.json
+
+# printable invitation exports (regenerate with scripts/invitation-art.mjs)
+print/

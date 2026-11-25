@@ -6,14 +6,14 @@ import { COUPLE, DATE_LABEL, RSVP_DEADLINE_LABEL, VENUES, mapsUrl } from "./wedd
 // Invitation emails, sent through Resend (RESEND_API_KEY). EMAIL_FROM sets the sender; until a
 // domain is verified in Resend, its test sender only delivers to the Resend account's own email.
 //
-// The artwork (public/email/*.png, built by scripts/email-art.mjs) is linked from the site when the
+// The invitation card (public/email/invite-card.png, built by scripts/invitation-art.mjs) is linked from the site when the
 // site has a public https address, and travels inside the email (inline attachments) otherwise, so a
 // test sent from a laptop still shows the peonies.
 
 export const emailConfigured = () => Boolean(process.env.RESEND_API_KEY);
 const FROM = () => process.env.EMAIL_FROM || `${COUPLE.short} <onboarding@resend.dev>`;
 
-const ART = { hero: "invite-hero.png", footer: "invite-footer.png" } as const;
+const ART = { card: "invite-card.png" } as const;
 type ArtKey = keyof typeof ART;
 
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -63,18 +63,6 @@ export function renderInviteEmail({
   const seatLine = `We have reserved ${seats} ${seats === 1 ? "seat" : "seats"} in your honour.`;
   const heroAlt = `Together with their families, ${COUPLE.bride} and ${COUPLE.groom} invite you to join them as they celebrate their marriage on ${DATE_LABEL}.`;
 
-  const venue = (key: "ceremony" | "reception", divider: boolean) => {
-    const v = VENUES[key];
-    return `
-      <td class="col" width="50%" valign="top" style="padding:6px 18px;text-align:center;${divider ? `border-left:1px solid ${C.line};` : ""}">
-        <p style="margin:0;font-family:${SANS};font-size:12px;letter-spacing:2.5px;text-transform:uppercase;font-weight:600;color:${C.muted};">${v.label}</p>
-        <p style="margin:8px 0 0;font-family:${SERIF};font-size:30px;line-height:1.1;color:${C.ink};">${v.time}</p>
-        <p style="margin:10px 0 0;font-family:${SERIF};font-size:19px;font-weight:600;line-height:1.3;color:${C.ink};">${esc(v.name)}</p>
-        <p style="margin:4px 0 0;font-family:${SERIF};font-size:16px;line-height:1.45;color:${C.body};">${esc(v.street.replace(/,$/, ""))}<br>${esc(v.city)}</p>
-        <p style="margin:10px 0 0;font-family:${SANS};font-size:13px;"><a href="${mapsUrl(key)}" style="color:${C.gilt};text-decoration:underline;">Directions</a></p>
-      </td>`;
-  };
-
   const html = `<!doctype html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -91,8 +79,6 @@ export function renderInviteEmail({
   @media (max-width: 540px) {
     .card { border-radius:0 !important; }
     .pad { padding-left:24px !important; padding-right:24px !important; }
-    .col { display:block !important; width:100% !important; border-left:0 !important; padding:14px 0 !important; }
-    .col + .col { border-top:1px solid ${C.line} !important; }
   }
 </style>
 </head>
@@ -103,23 +89,15 @@ export function renderInviteEmail({
 
   <table role="presentation" class="card" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:600px;background:${C.paper};border:1px solid ${C.line};border-radius:18px;overflow:hidden;">
     <tr><td style="padding:0;line-height:0;">
-      <img src="${src("hero")}" width="600" alt="${esc(heroAlt)}" style="display:block;width:100%;max-width:600px;height:auto;border:0;outline:none;font-family:${SERIF};font-size:18px;color:${C.ink};">
+      <img src="${src("card")}" width="600" alt="${esc(heroAlt)}" style="display:block;width:100%;max-width:600px;height:auto;border:0;outline:none;font-family:${SERIF};font-size:18px;color:${C.ink};">
     </td></tr>
 
-    <tr><td class="pad" align="center" style="padding:6px 48px 0;">
-      <p style="margin:0;font-family:${SERIF};font-style:italic;font-size:20px;line-height:1.5;color:${C.body};">Dear ${esc(partyName)},</p>
+    <tr><td class="pad" align="center" style="padding:34px 48px 0;border-top:1px solid ${C.line};">
+      <p style="margin:0;font-family:${SERIF};font-style:italic;font-size:21px;line-height:1.5;color:${C.body};">Dear ${esc(partyName)},</p>
       <p style="margin:6px 0 0;font-family:${SERIF};font-size:18px;line-height:1.55;color:${C.body};">${seatLine}</p>
-      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:26px auto 22px;"><tr><td style="width:72px;height:1px;background:${C.gilt};line-height:1px;font-size:0;">&nbsp;</td></tr></table>
     </td></tr>
 
-    <tr><td class="pad" style="padding:0 30px;">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
-        ${venue("ceremony", false)}
-        ${venue("reception", true)}
-      </tr></table>
-    </td></tr>
-
-    <tr><td class="pad" align="center" style="padding:36px 48px 8px;">
+    <tr><td class="pad" align="center" style="padding:28px 48px 8px;">
       <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;"><tr>
         <td align="center" bgcolor="${C.ink}" style="border-radius:999px;">
           <a href="${rsvpUrl}" target="_blank" style="display:inline-block;padding:16px 46px;font-family:${SANS};font-size:15px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:#fffdfa;text-decoration:none;border-radius:999px;">Reply to our invitation</a>
@@ -129,8 +107,11 @@ export function renderInviteEmail({
       <p style="margin:2px 0 0;font-family:${SERIF};font-style:italic;font-size:16px;line-height:1.5;color:${C.muted};">We kindly ask that our celebration be adults only.</p>
     </td></tr>
 
-    <tr><td style="padding:22px 0 0;line-height:0;">
-      <img src="${src("footer")}" width="600" alt="With love, ${esc(COUPLE.short)}" style="display:block;width:100%;max-width:600px;height:auto;border:0;outline:none;font-family:${SERIF};font-size:18px;color:${C.ink};">
+    <tr><td class="pad" align="center" style="padding:22px 48px 36px;font-family:${SANS};font-size:13px;line-height:1.8;color:${C.muted};">
+      Directions:
+      <a href="${mapsUrl("ceremony")}" style="color:${C.gilt};">${esc(c.name)}</a>
+      &nbsp;·&nbsp;
+      <a href="${mapsUrl("reception")}" style="color:${C.gilt};">${esc(r.name)}</a>
     </td></tr>
   </table>
 

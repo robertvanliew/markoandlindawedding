@@ -2,7 +2,7 @@
 
 import { headers } from "next/headers";
 import { z } from "zod";
-import { getInviteByToken, getResponse, saveResponse, type Invite } from "@/lib/store";
+import { findInvitesByName, getInviteByToken, getResponse, saveResponse, type Invite } from "@/lib/store";
 import { rateLimit } from "@/lib/rate-limit";
 import { rsvpOpen, type Meal } from "@/lib/wedding";
 
@@ -30,6 +30,31 @@ async function view(invite: Invite): Promise<InviteView> {
 async function clientKey() {
   const h = await headers();
   return h.get("x-forwarded-for")?.split(",")[0]?.trim() || h.get("x-real-ip") || "local";
+}
+
+const FindSchema = z.object({
+  first: z.string().trim().min(1).max(60),
+  last: z.string().trim().min(1).max(60),
+  website: z.string().max(0).optional(), // honeypot
+});
+
+export type FindResult =
+  | { status: "one"; token: string }
+  | { status: "many"; options: { token: string; party_name: string }[] }
+  | { status: "none" }
+  | { status: "invalid" }
+  | { status: "limited" };
+
+/** For guests with a printed invitation: find their party by first and last name. */
+export async function findInvitation(input: { first: string; last: string; website?: string }): Promise<FindResult> {
+  const parsed = FindSchema.safeParse(input);
+  if (!parsed.success) return { status: input.website ? "none" : "invalid" };
+  if (!rateLimit(`find:${await clientKey()}`, 12, 60_000)) return { status: "limited" };
+  const matches = await findInvitesByName(parsed.data.first, parsed.data.last);
+  if (matches.length === 0) return { status: "none" };
+  if (matches.length === 1) return { status: "one", token: matches[0].token };
+  // only the parties matching exactly what was typed; never the wider list
+  return { status: "many", options: matches.slice(0, 5).map((m) => ({ token: m.token, party_name: m.party_name })) };
 }
 
 export async function loadInvite(token: string): Promise<InviteView | null> {
