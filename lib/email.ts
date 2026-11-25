@@ -29,7 +29,7 @@ const isPublic = (url: string) => {
 
 const C = {
   page: "#efe8df",
-  paper: "#fdfbf8",
+  paper: "#ffffff",
   ink: "#5e4430",
   body: "#7a5b41",
   muted: "#7d6049",
