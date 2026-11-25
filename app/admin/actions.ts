@@ -119,7 +119,7 @@ export async function sendInvites(ids: string[]): Promise<SendResult> {
       continue;
     }
     try {
-      await sendEmail(inv.email, renderInviteEmail({ partyName: inv.party_name, rsvpUrl: `${base}/rsvp/${inv.token}`, siteUrl: base }));
+      await sendEmail(inv.email, renderInviteEmail({ partyName: inv.party_name, seats: inv.max_guests, rsvpUrl: `${base}/rsvp/${inv.token}`, siteUrl: base }));
       sent.push(inv.id);
     } catch (e) {
       failed.push(`${inv.party_name}: ${(e as Error).message}`);
@@ -137,5 +137,34 @@ export async function deleteEverything(confirmation: string): Promise<SaveResult
   if (confirmation.trim() !== "DELETE") return { ok: false, error: 'Type DELETE in capitals to confirm.' };
   await deleteAllGuestData();
   revalidatePath("/admin");
+  return { ok: true };
+}
+
+/**
+ * Sends one sample invitation to the given address, so the couple can see exactly what guests receive.
+ * Uses the first party on the list (its real RSVP link) or a sample party when the list is empty.
+ * Nothing is marked as sent.
+ */
+export async function sendTestInvite(to: string): Promise<SaveResult> {
+  await requireAdmin();
+  if (!emailConfigured()) return { ok: false, error: "Email sending isn't switched on yet: add RESEND_API_KEY to the site's settings." };
+  const email = z.email().safeParse(to.trim());
+  if (!email.success) return { ok: false, error: "Please enter a valid email address." };
+  if (!rateLimit("admin-test-send", 10, 60_000)) return { ok: false, error: "Too many test sends. Please wait a minute." };
+  const base = await siteUrl();
+  const first = (await listInvites())[0];
+  try {
+    await sendEmail(
+      email.data,
+      renderInviteEmail({
+        partyName: first?.party_name ?? "Ana & Petar Jovanović",
+        seats: first?.max_guests ?? 2,
+        rsvpUrl: `${base}/rsvp/${first?.token ?? "example"}`,
+        siteUrl: base,
+      }),
+    );
+  } catch (e) {
+    return { ok: false, error: `The test didn't send: ${(e as Error).message}` };
+  }
   return { ok: true };
 }

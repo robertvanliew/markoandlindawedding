@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useState, useTransition } from "react";
-import { deleteEverything, importCsv, logout, removeInvite, saveInvite, sendInvites, type SendResult } from "@/app/admin/actions";
+import { deleteEverything, importCsv, logout, removeInvite, saveInvite, sendInvites, sendTestInvite, type SendResult } from "@/app/admin/actions";
 import { MEALS } from "@/lib/wedding";
 
 export type Row = {
@@ -34,6 +34,7 @@ export function AdminDashboard({ rows, usingDatabase, emailReady }: { rows: Row[
   const [draftError, setDraftError] = useState("");
   const [note, setNote] = useState<{ tone: "info" | "error"; text: string } | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
+  const [testTo, setTestTo] = useState("");
   const [pending, start] = useTransition();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -112,6 +113,14 @@ export function AdminDashboard({ rows, usingDatabase, emailReady }: { rows: Row[
         return n;
       });
       setNote({ tone: "info", text: `Removed ${row.party_name}.` });
+    });
+  }
+
+  function sendTest(e: React.FormEvent) {
+    e.preventDefault();
+    start(async () => {
+      const res = await sendTestInvite(testTo);
+      setNote(res.ok ? { tone: "info", text: `Test invitation sent to ${testTo.trim()}. It can take a minute to arrive; check spam too.` } : { tone: "error", text: res.error });
     });
   }
 
@@ -240,6 +249,25 @@ export function AdminDashboard({ rows, usingDatabase, emailReady }: { rows: Row[
           </a>
         </div>
       </section>
+
+      <form className="admin-test" onSubmit={sendTest} aria-label="Send a test invitation">
+        <div>
+          <h2>See what guests receive</h2>
+          <p>Send yourself a test invitation. Nothing is marked as sent.</p>
+        </div>
+        <div className="admin-test-row">
+          <label className="sr-only" htmlFor="test-to">
+            Your email
+          </label>
+          <input id="test-to" className="input" type="email" placeholder="Your email" value={testTo} onChange={(e) => setTestTo(e.target.value)} required />
+          <button className="btn btn-sm" type="submit" disabled={pending}>
+            Send me a test
+          </button>
+          <a className="btn btn-sm btn-ghost" href="/admin/email-preview" target="_blank" rel="noopener">
+            Preview
+          </a>
+        </div>
+      </form>
 
       <section className="admin-send" aria-label="Send invitations">
         <p>

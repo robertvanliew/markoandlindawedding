@@ -10,9 +10,11 @@ export async function GET(req: Request) {
   const inv = id ? await getInvite(id) : null;
   const base = await siteUrl();
   const { html } = renderInviteEmail({
-    partyName: inv?.party_name ?? "Ana & Petar",
+    partyName: inv?.party_name ?? "Ana & Petar Jovanović",
+    seats: inv?.max_guests ?? 2,
     rsvpUrl: `${base}/rsvp/${inv?.token ?? "example"}`,
     siteUrl: base,
+    images: "linked",
   });
   return new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" } });
 }

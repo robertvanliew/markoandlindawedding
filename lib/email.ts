@@ -1,73 +1,146 @@
 import "server-only";
-import { COUPLE, DATE_LABEL, RSVP_DEADLINE_LABEL, VENUES } from "./wedding";
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { COUPLE, DATE_LABEL, RSVP_DEADLINE_LABEL, VENUES, mapsUrl } from "./wedding";
 
 // Invitation emails, sent through Resend (RESEND_API_KEY). EMAIL_FROM sets the sender; until a
 // domain is verified in Resend, its test sender only delivers to the Resend account's own email.
+//
+// The artwork (public/email/*.png, built by scripts/email-art.mjs) is linked from the site when the
+// site has a public https address, and travels inside the email (inline attachments) otherwise, so a
+// test sent from a laptop still shows the peonies.
 
 export const emailConfigured = () => Boolean(process.env.RESEND_API_KEY);
 const FROM = () => process.env.EMAIL_FROM || `${COUPLE.short} <onboarding@resend.dev>`;
 
+const ART = { hero: "invite-hero.png", footer: "invite-footer.png" } as const;
+type ArtKey = keyof typeof ART;
+
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-const INK = "#5e4430";
-const NAMES = "#8a6a4f";
-const MUTED = "#7d6049";
-const GILT = "#a8854e";
-const PAPER = "#fdfbf8";
-const SERIF = "'Cormorant Garamond', Georgia, 'Times New Roman', serif";
-const SCRIPT = "'Pinyon Script', 'Snell Roundhand', 'Apple Chancery', 'Brush Script MT', cursive";
+const isPublic = (url: string) => {
+  try {
+    const u = new URL(url);
+    return u.protocol === "https:" && !/^(localhost|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(u.hostname);
+  } catch {
+    return false;
+  }
+};
 
-export function renderInviteEmail({ partyName, rsvpUrl, siteUrl }: { partyName: string; rsvpUrl: string; siteUrl: string }) {
-  const c = VENUES.ceremony, r = VENUES.reception;
-  const subject = `You're invited: ${COUPLE.short}, ${DATE_LABEL}`;
-  const venue = (label: string, time: string, name: string, street: string, city: string) => `
-    <td width="50%" valign="top" style="padding:0 12px;text-align:center;font-family:${SERIF};color:${INK};">
-      <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:600;">${label}</div>
-      <div style="font-size:26px;margin-top:6px;">${time}</div>
-      <div style="font-size:17px;margin-top:8px;font-weight:600;">${esc(name)}</div>
-      <div style="font-size:15px;color:${MUTED};margin-top:2px;">${esc(street.replace(/,$/, ""))}<br>${esc(city)}</div>
-    </td>`;
+const C = {
+  page: "#efe8df",
+  paper: "#fdfbf8",
+  ink: "#5e4430",
+  body: "#7a5b41",
+  muted: "#7d6049",
+  gilt: "#a8854e",
+  line: "#e6d9cc",
+};
+const SERIF = "'Cormorant Garamond', 'Cormorant', Georgia, 'Times New Roman', serif";
+const SANS = "'Jost', 'Helvetica Neue', Helvetica, Arial, sans-serif";
+
+export type InviteEmail = { subject: string; html: string; text: string; inline: ArtKey[] };
+
+export function renderInviteEmail({
+  partyName,
+  seats,
+  rsvpUrl,
+  siteUrl,
+  images = "auto",
+}: {
+  partyName: string;
+  seats: number;
+  rsvpUrl: string;
+  siteUrl: string;
+  /** "linked" always loads the artwork from the site (the browser preview); "auto" embeds it unless the site is public. */
+  images?: "auto" | "linked";
+}): InviteEmail {
+  const inline = images === "auto" && !isPublic(siteUrl);
+  const src = (k: ArtKey) => (inline ? `cid:${k}` : `${siteUrl}/email/${ART[k]}`);
+  const c = VENUES.ceremony,
+    r = VENUES.reception;
+  const subject = `You're invited: the wedding of ${COUPLE.short}`;
+  const seatLine = `We have reserved ${seats} ${seats === 1 ? "seat" : "seats"} in your honour.`;
+  const heroAlt = `Together with their families, ${COUPLE.bride} and ${COUPLE.groom} invite you to join them as they celebrate their marriage on ${DATE_LABEL}.`;
+
+  const venue = (key: "ceremony" | "reception", divider: boolean) => {
+    const v = VENUES[key];
+    return `
+      <td class="col" width="50%" valign="top" style="padding:6px 18px;text-align:center;${divider ? `border-left:1px solid ${C.line};` : ""}">
+        <p style="margin:0;font-family:${SANS};font-size:12px;letter-spacing:2.5px;text-transform:uppercase;font-weight:600;color:${C.muted};">${v.label}</p>
+        <p style="margin:8px 0 0;font-family:${SERIF};font-size:30px;line-height:1.1;color:${C.ink};">${v.time}</p>
+        <p style="margin:10px 0 0;font-family:${SERIF};font-size:19px;font-weight:600;line-height:1.3;color:${C.ink};">${esc(v.name)}</p>
+        <p style="margin:4px 0 0;font-family:${SERIF};font-size:16px;line-height:1.45;color:${C.body};">${esc(v.street.replace(/,$/, ""))}<br>${esc(v.city)}</p>
+        <p style="margin:10px 0 0;font-family:${SANS};font-size:13px;"><a href="${mapsUrl(key)}" style="color:${C.gilt};text-decoration:underline;">Directions</a></p>
+      </td>`;
+  };
 
   const html = `<!doctype html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
 <meta name="color-scheme" content="light only">
+<meta name="supported-color-schemes" content="light only">
 <title>${esc(subject)}</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Pinyon+Script&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; padding:0; background:${C.page}; }
+  a { color:${C.gilt}; }
+  @media (max-width: 540px) {
+    .card { border-radius:0 !important; }
+    .pad { padding-left:24px !important; padding-right:24px !important; }
+    .col { display:block !important; width:100% !important; border-left:0 !important; padding:14px 0 !important; }
+    .col + .col { border-top:1px solid ${C.line} !important; }
+  }
+</style>
 </head>
-<body style="margin:0;padding:0;background:#f3ede5;">
-<div style="display:none;max-height:0;overflow:hidden;">Together with their families, Linda &amp; Marko invite you to celebrate their marriage. Please reply by ${RSVP_DEADLINE_LABEL}.</div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f3ede5;">
-<tr><td align="center" style="padding:24px 12px;">
-  <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:100%;background:${PAPER};border-radius:18px;overflow:hidden;">
-    <tr><td><img src="${siteUrl}/email/peonies-top.jpg" width="600" alt="" style="display:block;width:100%;height:auto;border:0;"></td></tr>
-    <tr><td style="padding:0 36px;text-align:center;font-family:${SERIF};color:${INK};">
-      <div style="font-size:17px;color:${MUTED};font-style:italic;">Dear ${esc(partyName)},</div>
-      <div style="font-size:14px;letter-spacing:3px;text-transform:uppercase;margin-top:22px;font-weight:600;">Together with their families</div>
-      <div style="font-family:${SCRIPT};font-size:46px;line-height:1.15;color:${NAMES};margin-top:14px;">${esc(COUPLE.bride)}</div>
-      <div style="font-family:${SCRIPT};font-size:34px;line-height:1;color:${GILT};margin:2px 0;">&amp;</div>
-      <div style="font-family:${SCRIPT};font-size:46px;line-height:1.15;color:${NAMES};">${esc(COUPLE.groom)}</div>
-      <div style="font-size:18px;font-style:italic;margin-top:16px;">invite you to join them as they celebrate their marriage on</div>
-      <div style="width:80px;height:1px;background:${GILT};margin:22px auto;"></div>
-      <div style="font-size:22px;letter-spacing:3px;text-transform:uppercase;font-weight:600;">${esc(DATE_LABEL)}</div>
+<body style="margin:0;padding:0;background:${C.page};">
+<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">Together with their families, ${esc(COUPLE.short)} invite you to celebrate their marriage on ${esc(DATE_LABEL)}. Please reply by ${esc(RSVP_DEADLINE_LABEL)}.&#8199;&#847;&#8199;&#847;&#8199;&#847;</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${C.page};">
+<tr><td align="center" style="padding:32px 10px;">
+
+  <table role="presentation" class="card" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:600px;background:${C.paper};border:1px solid ${C.line};border-radius:18px;overflow:hidden;">
+    <tr><td style="padding:0;line-height:0;">
+      <img src="${src("hero")}" width="600" alt="${esc(heroAlt)}" style="display:block;width:100%;max-width:600px;height:auto;border:0;outline:none;font-family:${SERIF};font-size:18px;color:${C.ink};">
     </td></tr>
-    <tr><td style="padding:26px 24px 0;">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
-        ${venue("Church Ceremony", c.time, c.name, c.street, c.city)}
-        ${venue("Reception", r.time, r.name, r.street, r.city)}
+
+    <tr><td class="pad" align="center" style="padding:6px 48px 0;">
+      <p style="margin:0;font-family:${SERIF};font-style:italic;font-size:20px;line-height:1.5;color:${C.body};">Dear ${esc(partyName)},</p>
+      <p style="margin:6px 0 0;font-family:${SERIF};font-size:18px;line-height:1.55;color:${C.body};">${seatLine}</p>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:26px auto 22px;"><tr><td style="width:72px;height:1px;background:${C.gilt};line-height:1px;font-size:0;">&nbsp;</td></tr></table>
+    </td></tr>
+
+    <tr><td class="pad" style="padding:0 30px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+        ${venue("ceremony", false)}
+        ${venue("reception", true)}
       </tr></table>
     </td></tr>
-    <tr><td align="center" style="padding:34px 36px 8px;font-family:${SERIF};">
-      <a href="${rsvpUrl}" style="display:inline-block;background:${INK};color:#fffdfa;text-decoration:none;font-size:16px;letter-spacing:2px;text-transform:uppercase;font-weight:600;padding:15px 38px;border-radius:999px;">RSVP</a>
-      <div style="font-size:15px;color:${MUTED};margin-top:14px;">Please reply by ${RSVP_DEADLINE_LABEL}.<br>We kindly ask that our celebration be adults only.</div>
+
+    <tr><td class="pad" align="center" style="padding:36px 48px 8px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;"><tr>
+        <td align="center" bgcolor="${C.ink}" style="border-radius:999px;">
+          <a href="${rsvpUrl}" target="_blank" style="display:inline-block;padding:16px 46px;font-family:${SANS};font-size:15px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:#fffdfa;text-decoration:none;border-radius:999px;">Reply to our invitation</a>
+        </td>
+      </tr></table>
+      <p style="margin:16px 0 0;font-family:${SERIF};font-size:17px;line-height:1.5;color:${C.body};">Kindly reply by ${esc(RSVP_DEADLINE_LABEL)}.</p>
+      <p style="margin:2px 0 0;font-family:${SERIF};font-style:italic;font-size:16px;line-height:1.5;color:${C.muted};">We kindly ask that our celebration be adults only.</p>
     </td></tr>
-    <tr><td><img src="${siteUrl}/email/peonies-bottom.jpg" width="600" alt="" style="display:block;width:100%;height:auto;border:0;"></td></tr>
+
+    <tr><td style="padding:22px 0 0;line-height:0;">
+      <img src="${src("footer")}" width="600" alt="With love, ${esc(COUPLE.short)}" style="display:block;width:100%;max-width:600px;height:auto;border:0;outline:none;font-family:${SERIF};font-size:18px;color:${C.ink};">
+    </td></tr>
   </table>
-  <div style="font-family:${SERIF};font-size:13px;color:${MUTED};margin-top:14px;">
-    This RSVP link is personal to your invitation. <a href="${rsvpUrl}" style="color:${MUTED};">${esc(rsvpUrl)}</a>
-  </div>
+
+  <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:100%;">
+    <tr><td class="pad" align="center" style="padding:20px 32px 0;font-family:${SANS};font-size:12px;line-height:1.6;color:${C.muted};">
+      This invitation is personal to ${esc(partyName)}. If the button doesn't open, copy this link into your browser:<br>
+      <a href="${rsvpUrl}" style="color:${C.muted};word-break:break-all;">${esc(rsvpUrl)}</a>
+    </td></tr>
+  </table>
+
 </td></tr>
 </table>
 </body>
@@ -77,20 +150,41 @@ export function renderInviteEmail({ partyName, rsvpUrl, siteUrl }: { partyName: 
 
 Together with their families, ${COUPLE.bride} & ${COUPLE.groom} invite you to join them as they celebrate their marriage on ${DATE_LABEL}.
 
-Church Ceremony, ${c.time}: ${c.name}, ${c.street.replace(/,$/, "")}, ${c.city}
-Reception, ${r.time}: ${r.name}, ${r.street.replace(/,$/, "")}, ${r.city}
+${seatLine}
 
-Please RSVP by ${RSVP_DEADLINE_LABEL}: ${rsvpUrl}
-We kindly ask that our celebration be adults only.`;
+${c.label}, ${c.time}
+${c.name}, ${c.street.replace(/,$/, "")}, ${c.city}
 
-  return { subject, html, text };
+${r.label}, ${r.time}
+${r.name}, ${r.street.replace(/,$/, "")}, ${r.city}
+
+Reply to our invitation: ${rsvpUrl}
+Kindly reply by ${RSVP_DEADLINE_LABEL}. We kindly ask that our celebration be adults only.
+
+With love,
+${COUPLE.short}`;
+
+  return { subject, html, text, inline: inline ? (Object.keys(ART) as ArtKey[]) : [] };
 }
 
-export async function sendEmail(to: string, msg: { subject: string; html: string; text: string }) {
+export async function sendEmail(to: string, msg: InviteEmail) {
+  const attachments = msg.inline.map((k) => ({
+    filename: ART[k],
+    content: readFileSync(path.join(process.cwd(), "public", "email", ART[k])).toString("base64"),
+    content_id: k,
+    content_type: "image/png",
+  }));
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: FROM(), to: [to], subject: msg.subject, html: msg.html, text: msg.text }),
+    body: JSON.stringify({
+      from: FROM(),
+      to: [to],
+      subject: msg.subject,
+      html: msg.html,
+      text: msg.text,
+      ...(attachments.length ? { attachments } : {}),
+    }),
   });
   if (!res.ok) {
     const body = await res.text().catch(() => "");

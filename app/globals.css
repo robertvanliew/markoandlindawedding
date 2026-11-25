@@ -1489,3 +1489,36 @@ a {
     background: #8c4532;
   }
 }
+
+.admin-test {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px 24px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: #fffdfa;
+  border: 1px solid #ebdfd1;
+}
+.admin-test h2 {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-ink-strong);
+}
+.admin-test p {
+  color: var(--color-muted);
+  font-size: 0.9375rem;
+}
+.admin-test-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex: 1 1 380px;
+  justify-content: flex-end;
+}
+.admin-test-row .input {
+  flex: 1 1 220px;
+  min-height: 44px;
+}
