@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useState, useTransition } from "react";
-import { deleteEverything, importCsv, logout, removeInvite, saveInvite, sendInvites, sendTestInvite, type SendResult } from "@/app/admin/actions";
+import { deleteEverything, importCsv, logout, markSent, removeInvite, saveInvite, sendInvites, sendTestInvite, type SendResult } from "@/app/admin/actions";
 import { MEALS } from "@/lib/wedding";
 
 export type Row = {
@@ -22,6 +22,40 @@ type Filter = "all" | "pending" | "attending" | "declined" | "unsent";
 type Draft = { id: string | null; party_name: string; aliases: string; email: string; max_guests: number };
 
 const STATUS_LABEL = { pending: "Awaiting reply", attending: "Attending", declined: "Declined" } as const;
+/** The couple's Gmail, used for "Send via Gmail" (a new message opened in their own Gmail). */
+const COUPLE_GMAIL = "markolindapupavac@gmail.com";
+
+/** A ready-to-send invitation in the couple's Gmail: addressed, with the party's personal RSVP link. */
+function gmailCompose(row: Row) {
+  const body = [
+    `Dear ${row.party_name},`,
+    "",
+    "Together with their families, Linda Todorovski & Marko Pupavac invite you to join them as they celebrate their marriage on Saturday, May 15, 2027.",
+    "",
+    `We have reserved ${row.max_guests} ${row.max_guests === 1 ? "seat" : "seats"} in your honour.`,
+    "",
+    "Church Ceremony, 1:00 PM: St. Sava Serbian Orthodox Church, 1375 Blundell Rd., Mississauga, ON",
+    "Reception, 5:30 PM: Château Le Jardin, 8440 Hwy 27, Woodbridge, ON",
+    "",
+    "Please see your invitation and reply here (this link is personal to you):",
+    row.link,
+    "",
+    "Kindly reply by March 15th, 2027. We kindly ask that our celebration be adults only.",
+    "",
+    "With love,",
+    "Linda & Marko",
+  ].join("\n");
+  const q = new URLSearchParams({
+    view: "cm",
+    fs: "1",
+    authuser: COUPLE_GMAIL,
+    to: row.email ?? "",
+    su: "You're invited: the wedding of Linda & Marko",
+    body,
+  });
+  return `https://mail.google.com/mail/?${q.toString()}`;
+}
+
 const mealLabel = (m: string) => MEALS.find((x) => x.value === m)?.label ?? m;
 const fmtDate = (iso: string | null) =>
   iso ? new Date(iso).toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric", timeZone: "America/Toronto" }) : "";
@@ -205,7 +239,11 @@ export function AdminDashboard({ rows, usingDatabase, emailReady }: { rows: Row[
               Test mode: this list is sample data kept in memory and resets when the site restarts. Connect Supabase before adding the real guest list.
             </p>
           )}
-          {!emailReady && <p className="notice">Invitation emails are switched off until the Gmail settings (GMAIL_USER, GMAIL_APP_PASSWORD) are added. You can still preview the email and copy each party&apos;s RSVP link.</p>}
+          {!emailReady && (
+            <p className="notice">
+              Automatic emails are off until Brevo is set up (BREVO_API_KEY, EMAIL_SENDER). Meanwhile use <b>Send via Gmail</b> on each party: it opens a ready-written invitation in your Gmail with their personal RSVP link, and you just click Send.
+            </p>
+          )}
         </div>
       )}
 
@@ -354,9 +392,22 @@ export function AdminDashboard({ rows, usingDatabase, emailReady }: { rows: Row[
                   <button className="btn-quiet" type="button" onClick={() => copy(r)}>
                     {copied === r.id ? "Copied" : "Copy link"}
                   </button>
-                  <button className="btn-quiet" type="button" disabled={!r.email || pending} onClick={() => send([r.id], r.party_name)}>
-                    {r.invited_at ? "Resend" : "Send"}
-                  </button>
+                  {r.email && (
+                    <a
+                      className="btn-quiet"
+                      href={gmailCompose(r)}
+                      target="_blank"
+                      rel="noopener"
+                      onClick={() => start(async () => void (await markSent([r.id])))}
+                    >
+                      Send via Gmail
+                    </a>
+                  )}
+                  {emailReady && (
+                    <button className="btn-quiet" type="button" disabled={!r.email || pending} onClick={() => send([r.id], r.party_name)}>
+                      {r.invited_at ? "Resend" : "Send"}
+                    </button>
+                  )}
                   <a className="btn-quiet" href={`/admin/email-preview?id=${encodeURIComponent(r.id)}`} target="_blank" rel="noopener">
                     Preview
                   </a>

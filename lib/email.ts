@@ -3,16 +3,21 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { COUPLE, DATE_LABEL, RSVP_DEADLINE_LABEL, VENUES, mapsUrl } from "./wedding";
 
-// Invitation emails, sent from the couple's own Gmail (GMAIL_USER + GMAIL_APP_PASSWORD, a Google app
-// password), so they reach any guest without a domain of their own. Gmail allows about 500 a day.
-// Resend (RESEND_API_KEY) still works as a fallback when Gmail isn't set up.
+// Invitation emails. The first service that is set up sends them:
+//   1. Brevo (BREVO_API_KEY + EMAIL_SENDER, a sender address verified in Brevo): no domain or app
+//      password needed; free for 300 emails a day.
+//   2. Gmail (GMAIL_USER + GMAIL_APP_PASSWORD, a Google app password).
+//   3. Resend (RESEND_API_KEY): only reaches the account owner until a domain is verified.
 //
 // The invitation card (public/email/invite-card.png, built by scripts/invitation-art.mjs) is linked from the
 // site when the site has a public https address, and travels inside the email (inline attachment)
 // otherwise, so a test sent from a laptop still shows the peonies.
 
+const brevoReady = () => Boolean(process.env.BREVO_API_KEY && senderEmail());
 const gmailReady = () => Boolean(process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD);
-export const emailConfigured = () => gmailReady() || Boolean(process.env.RESEND_API_KEY);
+export const emailConfigured = () => brevoReady() || gmailReady() || Boolean(process.env.RESEND_API_KEY);
+/** The address invitations come from (and replies go to). */
+const senderEmail = () => (process.env.EMAIL_SENDER || process.env.GMAIL_USER || "").trim();
 const FROM = () =>
   process.env.EMAIL_FROM && !(gmailReady() && process.env.EMAIL_FROM.includes("resend.dev"))
     ? process.env.EMAIL_FROM
@@ -62,7 +67,7 @@ export function renderInviteEmail({
   /** "linked" always loads the artwork from the site (the browser preview); "auto" embeds it unless the site is public. */
   images?: "auto" | "linked";
 }): InviteEmail {
-  const inline = images === "auto" && !isPublic(siteUrl);
+  const inline = images === "auto" && !isPublic(siteUrl) && !brevoReady();
   const src = (k: ArtKey) => (inline ? `cid:${k}` : `${siteUrl}/email/${ART[k]}`);
   const c = VENUES.ceremony,
     r = VENUES.reception;
@@ -169,7 +174,29 @@ async function gmail() {
 
 const artFile = (k: ArtKey) => path.join(process.cwd(), "public", "email", ART[k]);
 
+async function sendWithBrevo(to: string, msg: InviteEmail) {
+  const res = await fetch("https://api.brevo.com/v3/smtp/email", {
+    method: "POST",
+    headers: { "api-key": process.env.BREVO_API_KEY!.trim(), "Content-Type": "application/json", accept: "application/json" },
+    body: JSON.stringify({
+      sender: { name: COUPLE.short, email: senderEmail() },
+      replyTo: { email: senderEmail(), name: COUPLE.short },
+      to: [{ email: to }],
+      subject: msg.subject,
+      htmlContent: msg.html,
+      textContent: msg.text,
+    }),
+  });
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    if (res.status === 401) throw new Error("Brevo didn't accept the API key. Check BREVO_API_KEY.");
+    if (/sender/i.test(body)) throw new Error(`Brevo hasn't verified the sender ${senderEmail()} yet. Confirm it in Brevo → Senders.`);
+    throw new Error(`Brevo ${res.status}: ${body.slice(0, 200)}`);
+  }
+}
+
 export async function sendEmail(to: string, msg: InviteEmail) {
+  if (brevoReady()) return sendWithBrevo(to, msg);
   if (gmailReady()) {
     try {
       await (await gmail()).sendMail({
