@@ -161,7 +161,7 @@ async function gmail() {
     const nodemailer = (await import("nodemailer")).default;
     transport = nodemailer.createTransport({
       service: "gmail",
-      auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_APP_PASSWORD?.replace(/s+/g, "") },
+      auth: { user: process.env.GMAIL_USER?.trim(), pass: process.env.GMAIL_APP_PASSWORD?.replace(/\s+/g, "") },
     });
   }
   return transport;
