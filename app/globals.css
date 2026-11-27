@@ -280,7 +280,8 @@ a {
   min-height: 100svh;
   display: grid;
   place-items: center;
-  padding: clamp(84px, 11vh, 132px) 20px clamp(180px, 27vh, 300px);
+  align-content: center; /* words and photo sit together */
+  padding: clamp(84px, 11vh, 132px) 20px clamp(40px, 8vh, 96px); /* the photo's faded edge is the rest of the gap */
   background: radial-gradient(40% 32% at 50% 46%, rgb(243 230 221 / 0.32), transparent 72%);
   /* no isolation here: the text must stack above the fixed flowers and petals */
   overflow: clip;
@@ -958,7 +959,7 @@ a {
 .couple-photo {
   position: relative;
   width: min(460px, 88vw);
-  margin: 0 auto; /* starts below the first screen, in the open space before When & Where */
+  margin: clamp(8px, 2vh, 24px) auto 0; /* right under the RSVP buttons; the faded sky is the gap */
   --fade-x: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
   --fade-y: linear-gradient(180deg, transparent, #000 14%, #000 84%, transparent);
   -webkit-mask-image: var(--fade-x), var(--fade-y);

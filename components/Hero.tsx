@@ -1,3 +1,4 @@
+import { CouplePhoto } from "./CouplePhoto";
 import { HeroMotion } from "./HeroMotion";
 
 /**
@@ -33,6 +34,8 @@ export function Hero() {
         </div>
         <p {...rise("hero-deadline mt-4")}>Please reply by March 15th, 2027</p>
       </div>
+
+      <CouplePhoto />
     </header>
   );
 }

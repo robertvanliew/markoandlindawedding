@@ -5,7 +5,6 @@ import { Footer } from "@/components/Footer";
 import { SiteNav } from "@/components/SiteNav";
 import { FlowerFrame } from "@/components/Peony";
 import { ChurchBackdrop } from "@/components/ChurchBackdrop";
-import { CouplePhoto } from "@/components/CouplePhoto";
 
 export const revalidate = 3600;
 
@@ -17,7 +16,7 @@ export default function Home() {
       <SiteNav />
       <FlowerFrame />
       <Hero />
-      <CouplePhoto />      <div className="page-sheet">
+      <div className="page-sheet">
       <main>
         <Details />
         <RsvpSection />
