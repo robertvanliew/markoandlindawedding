@@ -13,7 +13,7 @@ export function FlowerFrame() {
     <div className="flower-frame" aria-hidden="true">
       <div className="garland garland--bottom">
         <div className="peony-sway">
-          <Image src={garlandBottom} alt="" priority sizes="(max-width: 560px) 100vw, 52vw" />
+          <Image src={garlandBottom} alt="" priority sizes="(max-width: 560px) 112vw, 82vw" />
         </div>
       </div>
       <div className="peony peony--tl">

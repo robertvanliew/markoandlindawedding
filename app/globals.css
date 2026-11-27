@@ -988,6 +988,25 @@ a {
   font-size: 1.125rem;
   color: var(--color-muted);
 }
+.footer-credit {
+  margin-top: 36px;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+}
+.footer-credit a {
+  display: inline-block;
+  padding-block: 12px; /* comfortable tap target without changing the line */
+  margin-block: -12px;
+  color: var(--color-ink-strong);
+  text-decoration: underline;
+  text-decoration-color: var(--color-gilt);
+  text-underline-offset: 3px;
+}
+.footer-credit a:hover {
+  text-decoration-color: currentColor;
+}
 .footer-names {
   margin-top: 6px;
   font-size: clamp(3.25rem, 2rem + 4.5vw, 5.5rem);
@@ -1082,8 +1101,8 @@ a {
 
 @media (prefers-reduced-motion: no-preference) {
   .hero .rise {
-    animation: rise-in 1100ms var(--ease-out-expo) both;
-    animation-delay: calc(450ms + var(--i, 0) * 110ms);
+    animation: rise-in 900ms var(--ease-out-expo) both;
+    animation-delay: calc(80ms + var(--i, 0) * 90ms);
   }
   .peony--tl {
     animation: bloom-tl 2200ms var(--ease-out-expo) 100ms both;

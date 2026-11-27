@@ -11,6 +11,13 @@ export function Footer() {
       <p className="footer-venues">
         {VENUES.ceremony.name} · {VENUES.reception.name}
       </p>
+      <p className="footer-credit">
+        Website by{" "}
+        <a href="https://robertvanliew.com" target="_blank" rel="noopener">
+          Robert Van Liew
+        </a>
+        , full stack developer
+      </p>
     </footer>
   );
 }
