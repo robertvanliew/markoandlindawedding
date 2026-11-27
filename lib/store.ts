@@ -14,6 +14,8 @@ export type Invite = {
   party_name: string;
   aliases: string[];
   email: string | null;
+  /** Last 4 digits of the party's phone number; with the last name, how guests find their invitation. */
+  phone_last4: string | null;
   max_guests: number;
   kids_allowed: boolean;
   invited_at: string | null;
@@ -32,7 +34,7 @@ export type RsvpResponse = {
   updated_at: string;
 };
 
-export type InviteInput = { party_name: string; aliases: string[]; email: string | null; max_guests: number };
+export type InviteInput = { party_name: string; aliases: string[]; email: string | null; phone_last4: string | null; max_guests: number };
 
 export const usingDatabase = Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
 
@@ -89,15 +91,15 @@ interface Backend {
 // --- memory (local development) ---
 
 const now = () => new Date().toISOString();
-const seed = (id: string, token: string, party_name: string, max_guests: number, aliases: string[] = [], email: string | null = null): Invite => ({
-  id, token, party_name, aliases, email, max_guests, kids_allowed: false, invited_at: null, created_at: now(),
+const seed = (id: string, token: string, party_name: string, max_guests: number, aliases: string[] = [], email: string | null = null, phone_last4: string | null = null): Invite => ({
+  id, token, party_name, aliases, email, phone_last4, max_guests, kids_allowed: false, invited_at: null, created_at: now(),
 });
 const SEED: Invite[] = [
-  seed("inv-1", "k7m2q9xw", "Jelena Marković", 1, [], "jelena@example.com"),
-  seed("inv-2", "p4t8z3va", "Ana & Petar Jovanović", 2, [], "ana.petar@example.com"),
-  seed("inv-3", "d9r5w1hn", "The Đorđević Family", 4, ["Dragan Đorđević", "Mira Đorđević"], "djordjevic@example.com"),
-  seed("inv-4", "m3n6c8ye", "Milan & Vesna Nikolić", 2, [], "milan.vesna@example.com"),
-  seed("inv-5", "s2f7j4ub", "Milan Nikolić", 1, [], "milan.n@example.com"),
+  seed("inv-1", "k7m2q9xw", "Jelena Marković", 1, [], "jelena@example.com", "1111"),
+  seed("inv-2", "p4t8z3va", "Ana & Petar Jovanović", 2, [], "ana.petar@example.com", "2222"),
+  seed("inv-3", "d9r5w1hn", "The Đorđević Family", 4, ["Dragan Đorđević", "Mira Đorđević"], "djordjevic@example.com", "3333"),
+  seed("inv-4", "m3n6c8ye", "Milan & Vesna Nikolić", 2, [], "milan.vesna@example.com", "4444"),
+  seed("inv-5", "s2f7j4ub", "Milan Nikolić", 1, [], "milan.n@example.com", "5555"),
 ];
 
 type Mem = { invites: Invite[]; responses: Map<string, RsvpResponse> };
@@ -158,7 +160,11 @@ const sb = () =>
   }));
 
 function check<T>(r: { data: T; error: { message: string } | null }): T {
-  if (r.error) throw new Error(`Database error: ${r.error.message}`);
+  if (r.error) {
+    if (/phone_last4/.test(r.error.message))
+      throw new Error("The database is missing the phone column. Run supabase/migrations/0003_phone_last4.sql in Supabase → SQL Editor.");
+    throw new Error(`Database error: ${r.error.message}`);
+  }
   return r.data;
 }
 
@@ -249,9 +255,18 @@ export const listResponses = () => db.listResponses();
 export const getResponse = (inviteId: string) => db.getResponse(inviteId);
 export const saveResponse: Backend["saveResponse"] = (inviteId, data) => db.saveResponse(inviteId, data);
 
-/** Exact matches only (after normalising accents and spacing), so the list can't be browsed. */
-export async function findInvitesByName(first: string, last: string): Promise<Invite[]> {
-  const query = normalizeName(`${first} ${last}`);
-  if (!query.includes(" ")) return [];
-  return (await db.listInvites()).filter((inv) => namesFor(inv).includes(query));
+/** Every surname a party answers to ("Jovanović" for "Ana & Petar Jovanović"), normalised. */
+function surnamesFor(invite: Invite): string[] {
+  return [...new Set(namesFor(invite).map((n) => n.split(" ").slice(1).join(" ")))];
+}
+
+/**
+ * Exact matches only: the last name (accents and spacing ignored) and the last 4 digits of the phone
+ * number on the invitation must both match, so the list can't be browsed. A party with no phone
+ * number on file can't be found this way.
+ */
+export async function findInvitesByLastName(last: string, phoneLast4: string): Promise<Invite[]> {
+  const surname = normalizeName(last);
+  if (!surname || !/^[0-9]{4}$/.test(phoneLast4)) return [];
+  return (await db.listInvites()).filter((inv) => inv.phone_last4 === phoneLast4 && surnamesFor(inv).includes(surname));
 }

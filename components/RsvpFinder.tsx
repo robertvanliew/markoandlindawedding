@@ -5,21 +5,22 @@ import { useRouter } from "next/navigation";
 import { findInvitation } from "@/app/actions";
 
 /**
- * Where the QR code on the printed invitation lands: the guest types their first and last name,
- * and is taken to their own invitation, exactly as an emailed link would.
+ * How guests reply from the website (the home page and the printed invitation's QR code): they type
+ * their last name and the last 4 digits of their phone number, and are taken to their own invitation,
+ * exactly as an emailed link would.
  */
 export function RsvpFinder() {
   const uid = useId();
   const router = useRouter();
-  const [first, setFirst] = useState("");
   const [last, setLast] = useState("");
+  const [phone, setPhone] = useState("");
   const [honey, setHoney] = useState("");
   const [options, setOptions] = useState<{ token: string; party_name: string }[] | null>(null);
-  const [errors, setErrors] = useState<{ first?: string; last?: string }>({});
+  const [errors, setErrors] = useState<{ last?: string; phone?: string }>({});
   const [message, setMessage] = useState("");
   const [pending, start] = useTransition();
-  const firstRef = useRef<HTMLInputElement>(null);
   const lastRef = useRef<HTMLInputElement>(null);
+  const phoneRef = useRef<HTMLInputElement>(null);
 
   function open(token: string) {
     start(() => router.push(`/rsvp/${token}#rsvp`));
@@ -28,19 +29,19 @@ export function RsvpFinder() {
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     const errs: typeof errors = {};
-    if (!first.trim()) errs.first = "Please enter your first name.";
     if (!last.trim()) errs.last = "Please enter your last name.";
+    if (!/^[0-9]{4}$/.test(phone)) errs.phone = "Please enter the last 4 digits of your phone number.";
     setErrors(errs);
     setMessage("");
-    if (errs.first) return firstRef.current?.focus();
     if (errs.last) return lastRef.current?.focus();
+    if (errs.phone) return phoneRef.current?.focus();
     start(async () => {
       try {
-        const res = await findInvitation({ first, last, website: honey });
+        const res = await findInvitation({ last, phone, website: honey });
         if (res.status === "one") return open(res.token);
         if (res.status === "many") return setOptions(res.options);
         if (res.status === "limited") return setMessage("Too many searches in a short time. Please wait a minute and try again.");
-        setMessage("We couldn't find an invitation under that name. Please check the spelling and use the name on your invitation, or contact Linda and Marko.");
+        setMessage("We couldn't find an invitation with that last name and phone number. Please check both and try again, or contact Linda and Marko.");
       } catch {
         setMessage("We couldn't reach the guest list just now. Please try again in a moment.");
       }
@@ -52,7 +53,7 @@ export function RsvpFinder() {
       <div className="step-enter grid gap-6">
         <div>
           <h3 className="step-heading">Which invitation is yours?</h3>
-          <p className="step-note">More than one invitation matches that name.</p>
+          <p className="step-note">More than one invitation matches.</p>
         </div>
         <div className="choice-group">
           {options.map((o) => (
@@ -74,29 +75,9 @@ export function RsvpFinder() {
     <form onSubmit={onSubmit} noValidate className="step-enter grid gap-6" aria-busy={pending}>
       <div>
         <h3 className="step-heading">Find your invitation</h3>
-        <p className="step-note">Enter your name as it appears on your invitation.</p>
+        <p className="step-note">Enter your last name and the last 4 digits of your phone number.</p>
       </div>
       <div className="grid gap-5 sm:grid-cols-2">
-        <div className="field">
-          <label className="field-label" htmlFor={`${uid}-first`}>
-            First name
-          </label>
-          <input
-            ref={firstRef}
-            id={`${uid}-first`}
-            className="input"
-            autoComplete="given-name"
-            value={first}
-            onChange={(e) => setFirst(e.target.value)}
-            aria-invalid={errors.first ? true : undefined}
-            aria-describedby={errors.first ? `${uid}-first-err` : undefined}
-          />
-          {errors.first && (
-            <p className="field-error" id={`${uid}-first-err`}>
-              {errors.first}
-            </p>
-          )}
-        </div>
         <div className="field">
           <label className="field-label" htmlFor={`${uid}-last`}>
             Last name
@@ -114,6 +95,29 @@ export function RsvpFinder() {
           {errors.last && (
             <p className="field-error" id={`${uid}-last-err`}>
               {errors.last}
+            </p>
+          )}
+        </div>
+        <div className="field">
+          <label className="field-label" htmlFor={`${uid}-phone`}>
+            Last 4 digits of your phone
+          </label>
+          <input
+            ref={phoneRef}
+            id={`${uid}-phone`}
+            className="input"
+            inputMode="numeric"
+            autoComplete="off"
+            maxLength={4}
+            placeholder="1234"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, "").slice(0, 4))}
+            aria-invalid={errors.phone ? true : undefined}
+            aria-describedby={errors.phone ? `${uid}-phone-err` : undefined}
+          />
+          {errors.phone && (
+            <p className="field-error" id={`${uid}-phone-err`}>
+              {errors.phone}
             </p>
           )}
         </div>

@@ -952,6 +952,26 @@ a {
   overflow: hidden;
 }
 
+/* ---------- Couple photo ---------- */
+
+/* No frame: every edge feathers into the paper, so the photo sits in the page like a print washed in. */
+.couple-photo {
+  position: relative;
+  width: min(460px, 88vw);
+  margin: 0 auto; /* starts below the first screen, in the open space before When & Where */
+  --fade-x: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
+  --fade-y: linear-gradient(180deg, transparent, #000 14%, #000 84%, transparent);
+  -webkit-mask-image: var(--fade-x), var(--fade-y);
+  -webkit-mask-composite: source-in;
+  mask-image: var(--fade-x), var(--fade-y);
+  mask-composite: intersect;
+}
+.couple-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 /* ---------- Footer ---------- */
 
 .footer {
@@ -1557,4 +1577,8 @@ a {
 .admin-test-row .input {
   flex: 1 1 220px;
   min-height: 44px;
+}
+
+.admin-warn {
+  color: #9a4a2e;
 }

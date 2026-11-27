@@ -22,7 +22,7 @@ export default function RsvpFind() {
                 RSVP
               </h1>
               <p className="section-sub">
-                {closed ? "RSVPs are now closed" : `Please reply by ${RSVP_DEADLINE_LABEL}. We kindly ask that our celebration be adults only.`}
+                {closed ? "RSVPs are now closed" : `Please reply by ${RSVP_DEADLINE_LABEL}.`}
               </p>
             </div>
             <div className="card rsvp-card">

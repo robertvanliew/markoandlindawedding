@@ -22,3 +22,6 @@ next-env.d.ts
 
 # printable invitation exports (regenerate with scripts/invitation-art.mjs)
 /print/
+
+# original photos from the couple (the cropped copy lives in public/photos)
+/Image  for space/

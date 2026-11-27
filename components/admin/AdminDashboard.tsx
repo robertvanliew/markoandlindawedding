@@ -9,6 +9,7 @@ export type Row = {
   party_name: string;
   aliases: string[];
   email: string | null;
+  phone_last4: string | null;
   max_guests: number;
   invited_at: string | null;
   link: string;
@@ -19,7 +20,7 @@ export type Row = {
 };
 
 type Filter = "all" | "pending" | "attending" | "declined" | "unsent";
-type Draft = { id: string | null; party_name: string; aliases: string; email: string; max_guests: number };
+type Draft = { id: string | null; party_name: string; aliases: string; email: string; phone: string; max_guests: number };
 
 const STATUS_LABEL = { pending: "Awaiting reply", attending: "Attending", declined: "Declined" } as const;
 /** The couple's Gmail, used for "Send via Gmail" (a new message opened in their own Gmail). */
@@ -115,8 +116,8 @@ export function AdminDashboard({ rows, usingDatabase, emailReady }: { rows: Row[
     setDraftError("");
     setDraft(
       row
-        ? { id: row.id, party_name: row.party_name, aliases: row.aliases.join("; "), email: row.email ?? "", max_guests: row.max_guests }
-        : { id: null, party_name: "", aliases: "", email: "", max_guests: 2 },
+        ? { id: row.id, party_name: row.party_name, aliases: row.aliases.join("; "), email: row.email ?? "", phone: row.phone_last4 ?? "", max_guests: row.max_guests }
+        : { id: null, party_name: "", aliases: "", email: "", phone: "", max_guests: 2 },
     );
     requestAnimationFrame(() => dialogRef.current?.showModal());
   }
@@ -365,6 +366,11 @@ export function AdminDashboard({ rows, usingDatabase, emailReady }: { rows: Row[
                 <td data-label="Party">
                   <strong>{r.party_name}</strong>
                   <small>{r.email ?? "No email"}</small>
+                  {r.phone_last4 ? (
+                    <small>Phone ending {r.phone_last4}</small>
+                  ) : (
+                    <small className="admin-warn">No phone: can&apos;t RSVP from the website yet</small>
+                  )}
                 </td>
                 <td data-label="Seats">{r.max_guests}</td>
                 <td data-label="Invitation">{r.invited_at ? <>Sent {fmtDate(r.invited_at)}</> : <span className="admin-muted">Not sent</span>}</td>
@@ -432,7 +438,7 @@ export function AdminDashboard({ rows, usingDatabase, emailReady }: { rows: Row[
       </div>
 
       <p className="admin-help">
-        CSV columns: <code>party_name, max_guests, kids_allowed, aliases, email</code>. Aliases are optional other names for the party, separated with semicolons.
+        CSV columns: <code>party_name, max_guests, kids_allowed, aliases, email, phone</code>. Aliases are optional other names for the party, separated with semicolons. Only the last 4 digits of each phone number are kept.
       </p>
 
       <section className="admin-danger-zone" aria-labelledby="danger-title">
@@ -455,7 +461,7 @@ export function AdminDashboard({ rows, usingDatabase, emailReady }: { rows: Row[
               </label>
               <input id="d-party" className="input" value={draft.party_name} onChange={(e) => setDraft({ ...draft, party_name: e.target.value })} placeholder="Ana & Petar Jovanović" required autoFocus />
               <p className="field-hint">
-                Write every guest&apos;s first name with the surname, e.g. &quot;Ana &amp; Petar Jovanović&quot;. Guests with a printed invitation find it by typing their own first and last name.
+                Write every guest&apos;s first name with the surname, e.g. &quot;Ana &amp; Petar Jovanović&quot;. Guests find their invitation on the website with their last name and the last 4 digits of their phone number.
               </p>
             </div>
             <div className="grid gap-5 sm:grid-cols-[1fr_120px]">
@@ -473,8 +479,15 @@ export function AdminDashboard({ rows, usingDatabase, emailReady }: { rows: Row[
               </div>
             </div>
             <div className="field">
+              <label className="field-label" htmlFor="d-phone">
+                Phone number
+              </label>
+              <input id="d-phone" className="input" type="tel" inputMode="tel" value={draft.phone} onChange={(e) => setDraft({ ...draft, phone: e.target.value })} placeholder="e.g. 416 555 1234" />
+              <p className="field-hint">Only the last 4 digits are saved. Guests type them with their last name to RSVP.</p>
+            </div>
+            <div className="field">
               <label className="field-label" htmlFor="d-aliases">
-                Other names guests might type <span className="admin-muted">(optional)</span>
+                Other names on the invitation <span className="admin-muted">(optional)</span>
               </label>
               <input id="d-aliases" className="input" value={draft.aliases} onChange={(e) => setDraft({ ...draft, aliases: e.target.value })} placeholder="e.g. Ana Petrović; Peter Jovanovic" />
             </div>

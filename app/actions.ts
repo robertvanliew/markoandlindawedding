@@ -2,7 +2,7 @@
 
 import { headers } from "next/headers";
 import { z } from "zod";
-import { findInvitesByName, getInviteByToken, getResponse, saveResponse, type Invite } from "@/lib/store";
+import { findInvitesByLastName, getInviteByToken, getResponse, saveResponse, type Invite } from "@/lib/store";
 import { rateLimit } from "@/lib/rate-limit";
 import { rsvpOpen, type Meal } from "@/lib/wedding";
 
@@ -33,8 +33,8 @@ async function clientKey() {
 }
 
 const FindSchema = z.object({
-  first: z.string().trim().min(1).max(60),
   last: z.string().trim().min(1).max(60),
+  phone: z.string().trim().regex(/^[0-9]{4}$/),
   website: z.string().max(0).optional(), // honeypot
 });
 
@@ -45,12 +45,13 @@ export type FindResult =
   | { status: "invalid" }
   | { status: "limited" };
 
-/** For guests with a printed invitation: find their party by first and last name. */
-export async function findInvitation(input: { first: string; last: string; website?: string }): Promise<FindResult> {
+/** Guests find their party with their last name and the last 4 digits of their phone number. */
+export async function findInvitation(input: { last: string; phone: string; website?: string }): Promise<FindResult> {
   const parsed = FindSchema.safeParse(input);
   if (!parsed.success) return { status: input.website ? "none" : "invalid" };
-  if (!rateLimit(`find:${await clientKey()}`, 12, 60_000)) return { status: "limited" };
-  const matches = await findInvitesByName(parsed.data.first, parsed.data.last);
+  // a stranger would have to guess 4 digits; keep guesses slow
+  if (!rateLimit(`find:${await clientKey()}`, 8, 60_000)) return { status: "limited" };
+  const matches = await findInvitesByLastName(parsed.data.last, parsed.data.phone);
   if (matches.length === 0) return { status: "none" };
   if (matches.length === 1) return { status: "one", token: matches[0].token };
   // only the parties matching exactly what was typed; never the wider list

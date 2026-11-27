@@ -42,6 +42,7 @@ export default async function AdminPage() {
       party_name: inv.party_name,
       aliases: inv.aliases,
       email: inv.email,
+      phone_last4: inv.phone_last4 ?? null,
       max_guests: inv.max_guests,
       invited_at: inv.invited_at,
       link: `${base}/rsvp/${inv.token}`,

@@ -28,17 +28,33 @@ const InviteSchema = z.object({
     .max(500)
     .transform((s) => s.split(/[;\n]/).map((x) => x.trim()).filter(Boolean)),
   email: z.union([z.literal(""), z.email("That email doesn't look right.")]).transform((s) => (s ? normalizeEmail(s) : null)),
+  // Any phone format is accepted; only its last 4 digits are kept.
+  phone: z
+    .string()
+    .max(40)
+    .transform((s) => s.replace(/[^0-9]/g, ""))
+    .refine((d) => d.length === 0 || d.length >= 4, "Please enter the phone number (at least its last 4 digits).")
+    .transform((d) => (d ? d.slice(-4) : null)),
   max_guests: z.coerce.number().int().min(1, "At least 1 seat.").max(20, "20 seats at most."),
 });
 
 export type SaveResult = { ok: true } | { ok: false; error: string };
 
-export async function saveInvite(id: string | null, input: { party_name: string; aliases: string; email: string; max_guests: number }): Promise<SaveResult> {
+const toInput = ({ phone, ...rest }: z.output<typeof InviteSchema>) => ({ ...rest, phone_last4: phone });
+
+export async function saveInvite(
+  id: string | null,
+  input: { party_name: string; aliases: string; email: string; phone: string; max_guests: number },
+): Promise<SaveResult> {
   await requireAdmin();
   const parsed = InviteSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "Please check the details." };
-  if (id) await updateInvite(id, parsed.data);
-  else await createInvite(parsed.data);
+  try {
+    if (id) await updateInvite(id, toInput(parsed.data));
+    else await createInvite(toInput(parsed.data));
+  } catch (e) {
+    return { ok: false, error: (e as Error).message };
+  }
   revalidatePath("/admin");
   return { ok: true };
 }
@@ -50,7 +66,7 @@ export async function removeInvite(id: string): Promise<SaveResult> {
   return { ok: true };
 }
 
-/** CSV columns: party_name, max_guests, aliases (separated by ;), email. A header row is optional. */
+/** CSV columns: party_name, max_guests, aliases (separated by ;), email, phone. A header row is optional. */
 export async function importCsv(csv: string): Promise<{ ok: true; added: number; skipped: string[] } | { ok: false; error: string }> {
   await requireAdmin();
   const rows = parseCsv(csv);
@@ -58,13 +74,13 @@ export async function importCsv(csv: string): Promise<{ ok: true; added: number;
   const head = rows[0].map((h) => h.trim().toLowerCase());
   const hasHeader = head.includes("party_name");
   const col = (name: string, fallback: number) => (hasHeader ? head.indexOf(name) : fallback);
-  const idx = { party: col("party_name", 0), seats: col("max_guests", 1), aliases: col("aliases", 3), email: col("email", 4) };
+  const idx = { party: col("party_name", 0), seats: col("max_guests", 1), aliases: col("aliases", 3), email: col("email", 4), phone: col("phone", 5) };
   const existing = new Set((await listInvites()).map((i) => i.party_name.trim().toLowerCase()));
   let added = 0;
   const skipped: string[] = [];
   for (const [n, row] of rows.slice(hasHeader ? 1 : 0).entries()) {
     const at = (i: number) => (i >= 0 ? (row[i] ?? "").trim() : "");
-    const parsed = InviteSchema.safeParse({ party_name: at(idx.party), max_guests: at(idx.seats) || "1", aliases: at(idx.aliases), email: at(idx.email) });
+    const parsed = InviteSchema.safeParse({ party_name: at(idx.party), max_guests: at(idx.seats) || "1", aliases: at(idx.aliases), email: at(idx.email), phone: at(idx.phone) });
     const line = n + (hasHeader ? 2 : 1);
     if (!parsed.success) {
       if (row.some((c) => c.trim())) skipped.push(`Row ${line}: ${parsed.error.issues[0]?.message}`);
@@ -74,7 +90,7 @@ export async function importCsv(csv: string): Promise<{ ok: true; added: number;
       skipped.push(`Row ${line}: "${parsed.data.party_name}" is already on the list`);
       continue;
     }
-    await createInvite(parsed.data);
+    await createInvite(toInput(parsed.data));
     existing.add(parsed.data.party_name.toLowerCase());
     added++;
   }
