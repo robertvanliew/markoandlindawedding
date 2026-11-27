@@ -205,7 +205,7 @@ export function AdminDashboard({ rows, usingDatabase, emailReady }: { rows: Row[
               Test mode: this list is sample data kept in memory and resets when the site restarts. Connect Supabase before adding the real guest list.
             </p>
           )}
-          {!emailReady && <p className="notice">Invitation emails are switched off until RESEND_API_KEY is added. You can still preview the email and copy each party&apos;s RSVP link.</p>}
+          {!emailReady && <p className="notice">Invitation emails are switched off until the Gmail settings (GMAIL_USER, GMAIL_APP_PASSWORD) are added. You can still preview the email and copy each party&apos;s RSVP link.</p>}
         </div>
       )}
 

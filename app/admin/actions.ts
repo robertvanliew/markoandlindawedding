@@ -106,7 +106,7 @@ export type SendResult = { ok: true; sent: number; failed: string[]; skipped: st
 
 export async function sendInvites(ids: string[]): Promise<SendResult> {
   await requireAdmin();
-  if (!emailConfigured()) return { ok: false, error: "Email sending isn't switched on yet: add RESEND_API_KEY to the site's settings." };
+  if (!emailConfigured()) return { ok: false, error: "Email sending isn't switched on yet: add GMAIL_USER and GMAIL_APP_PASSWORD to the site's settings." };
   const base = await siteUrl();
   const sent: string[] = [];
   const failed: string[] = [];
@@ -147,7 +147,7 @@ export async function deleteEverything(confirmation: string): Promise<SaveResult
  */
 export async function sendTestInvite(to: string): Promise<SaveResult> {
   await requireAdmin();
-  if (!emailConfigured()) return { ok: false, error: "Email sending isn't switched on yet: add RESEND_API_KEY to the site's settings." };
+  if (!emailConfigured()) return { ok: false, error: "Email sending isn't switched on yet: add GMAIL_USER and GMAIL_APP_PASSWORD to the site's settings." };
   const email = z.email().safeParse(to.trim());
   if (!email.success) return { ok: false, error: "Please enter a valid email address." };
   if (!rateLimit("admin-test-send", 10, 60_000)) return { ok: false, error: "Too many test sends. Please wait a minute." };

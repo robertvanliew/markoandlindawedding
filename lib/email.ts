@@ -3,15 +3,22 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { COUPLE, DATE_LABEL, RSVP_DEADLINE_LABEL, VENUES, mapsUrl } from "./wedding";
 
-// Invitation emails, sent through Resend (RESEND_API_KEY). EMAIL_FROM sets the sender; until a
-// domain is verified in Resend, its test sender only delivers to the Resend account's own email.
+// Invitation emails, sent from the couple's own Gmail (GMAIL_USER + GMAIL_APP_PASSWORD, a Google app
+// password), so they reach any guest without a domain of their own. Gmail allows about 500 a day.
+// Resend (RESEND_API_KEY) still works as a fallback when Gmail isn't set up.
 //
-// The invitation card (public/email/invite-card.png, built by scripts/invitation-art.mjs) is linked from the site when the
-// site has a public https address, and travels inside the email (inline attachments) otherwise, so a
-// test sent from a laptop still shows the peonies.
+// The invitation card (public/email/invite-card.png, built by scripts/invitation-art.mjs) is linked from the
+// site when the site has a public https address, and travels inside the email (inline attachment)
+// otherwise, so a test sent from a laptop still shows the peonies.
 
-export const emailConfigured = () => Boolean(process.env.RESEND_API_KEY);
-const FROM = () => process.env.EMAIL_FROM || `${COUPLE.short} <onboarding@resend.dev>`;
+const gmailReady = () => Boolean(process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD);
+export const emailConfigured = () => gmailReady() || Boolean(process.env.RESEND_API_KEY);
+const FROM = () =>
+  process.env.EMAIL_FROM && !(gmailReady() && process.env.EMAIL_FROM.includes("resend.dev"))
+    ? process.env.EMAIL_FROM
+    : gmailReady()
+      ? `"${COUPLE.short}" <${process.env.GMAIL_USER}>`
+      : `${COUPLE.short} <onboarding@resend.dev>`;
 
 const ART = { card: "invite-card.png" } as const;
 type ArtKey = keyof typeof ART;
@@ -148,10 +155,45 @@ ${COUPLE.short}`;
   return { subject, html, text, inline: inline ? (Object.keys(ART) as ArtKey[]) : [] };
 }
 
+let transport: import("nodemailer").Transporter | null = null;
+async function gmail() {
+  if (!transport) {
+    const nodemailer = (await import("nodemailer")).default;
+    transport = nodemailer.createTransport({
+      service: "gmail",
+      auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_APP_PASSWORD?.replace(/s+/g, "") },
+    });
+  }
+  return transport;
+}
+
+const artFile = (k: ArtKey) => path.join(process.cwd(), "public", "email", ART[k]);
+
 export async function sendEmail(to: string, msg: InviteEmail) {
+  if (gmailReady()) {
+    try {
+      await (await gmail()).sendMail({
+        from: FROM(),
+        to,
+        subject: msg.subject,
+        html: msg.html,
+        text: msg.text,
+        attachments: msg.inline.map((k) => ({ filename: ART[k], content: readFileSync(artFile(k)), cid: k, contentType: "image/png" })),
+      });
+    } catch (e) {
+      const m = (e as Error).message;
+      throw new Error(
+        /Invalid login|Username and Password not accepted|535/i.test(m)
+          ? "Gmail didn't accept the sign-in. Check GMAIL_USER and the app password."
+          : `Gmail: ${m.slice(0, 200)}`,
+      );
+    }
+    return;
+  }
+
   const attachments = msg.inline.map((k) => ({
     filename: ART[k],
-    content: readFileSync(path.join(process.cwd(), "public", "email", ART[k])).toString("base64"),
+    content: readFileSync(artFile(k)).toString("base64"),
     content_id: k,
     content_type: "image/png",
   }));

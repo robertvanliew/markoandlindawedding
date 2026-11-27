@@ -26,12 +26,12 @@ const pinyon = Pinyon_Script({
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
-  title: "Linda & Marko · May 15th, 2027",
-  description: "Together with their families, Linda Todorovski & Marko Pupavac invite you to celebrate their marriage on Saturday, May 15th, 2027.",
+  title: "Linda & Marko · May 15, 2027",
+  description: "Together with their families, Linda Todorovski & Marko Pupavac invite you to celebrate their marriage on Saturday, May 15, 2027.",
   robots: { index: false, follow: false, nocache: true, googleBot: { index: false, follow: false } },
   openGraph: {
     title: "Linda & Marko",
-    description: "Saturday, May 15th, 2027 · Please RSVP by March 15th, 2027",
+    description: "Saturday, May 15, 2027 · Please RSVP by March 15th, 2027",
     type: "website",
   },
 };

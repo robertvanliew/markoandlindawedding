@@ -9,7 +9,7 @@ export const COUPLE = {
 
 export const TIMEZONE = "America/Toronto";
 
-export const DATE_LABEL = "Saturday, May 15th, 2027";
+export const DATE_LABEL = "Saturday, May 15, 2027";
 
 export type VenueKey = "ceremony" | "reception";
 

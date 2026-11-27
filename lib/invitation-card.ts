@@ -43,7 +43,7 @@ export function invitationCardHtml({
     ? `<div class="sheet-gap"></div>
 <div class="card back">
   <div class="mono" aria-label="L and M"><span class="l">L</span><span class="a">&amp;</span><span class="l">M</span></div>
-  <p class="back-date">May 15th, 2027</p>
+  <p class="back-date">May 15, 2027</p>
 </div>`
     : "";
   const bar = page
@@ -87,6 +87,9 @@ export function invitationCardHtml({
   /* Printed card: the embossed paper carries the flowers; the border runs along the vines and only
      breaks at the two peonies, like the original. */
   .card.emboss { background: #fff url("${art.paperFront ?? ""}") center / 100% 100% no-repeat; }
+  /* the printed card's border is part of the embossed paper (scripts/emboss-paper.mjs), so the vines
+     can wrap around it */
+  .card.emboss .ln { display: none; }
   /* a peony in every corner: each line breaks at both ends with a short taper, and runs along the vines */
   .card.emboss .ln { --t: 22px; }
   .card.emboss .ln.h { background: linear-gradient(90deg, transparent, var(--c) var(--t), var(--c) calc(100% - var(--t)), transparent); }
@@ -159,7 +162,7 @@ ${bar}
     <p class="amp">&amp;</p>
     <p class="names">Marko Pupavac</p>
     <p class="lead caps">Invite you to join them<br>as they celebrate their marriage on</p>
-    <p class="date caps">Saturday, May 15<sup>th</sup>, 2027</p>
+    <p class="date caps">Saturday, May 15, 2027</p>
     <div class="cols">
       <div class="col">
         <h2 class="caps">Church Ceremony</h2>

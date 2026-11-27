@@ -10,7 +10,25 @@
 import puppeteer from "puppeteer-core";
 import QRCode from "qrcode";
 import sharp from "sharp";
-import { existsSync, mkdirSync, readFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
+
+// OneDrive can briefly lock a file it is syncing; write beside it, then swap it in, retrying a few times.
+async function writeSafely(path, buffer) {
+  const tmp = `${path}.tmp`;
+  writeFileSync(tmp, buffer);
+  for (let attempt = 0; ; attempt++) {
+    try {
+      renameSync(tmp, path);
+      return;
+    } catch (e) {
+      if (attempt >= 8) {
+        rmSync(tmp, { force: true });
+        throw e;
+      }
+      await new Promise((r) => setTimeout(r, 750));
+    }
+  }
+}
 import { CARD, invitationCardHtml } from "../lib/invitation-card.ts";
 
 const site = (process.argv[2] || process.env.NEXT_PUBLIC_SITE_URL || "https://markoandlindawedding.vercel.app").replace(/\/$/, "");
@@ -61,7 +79,8 @@ try {
   await print.pdf({ path: "print/linda-marko-invitation-5x7.pdf", width: "5in", height: "7in", printBackground: true });
   const shot = async (selector, out) => {
     const el = await print.$(selector);
-    await sharp(await el.screenshot({ type: "png" })).withMetadata({ density: 300 }).png({ compressionLevel: 9 }).toFile(out);
+    const png = await sharp(await el.screenshot({ type: "png" })).withMetadata({ density: 300 }).png({ compressionLevel: 9 }).toBuffer();
+    await writeSafely(out, png);
   };
   await shot(".card:not(.back)", "print/linda-marko-invitation-5x7.png");
   await shot(".card.back", "print/linda-marko-invitation-5x7-back.png");
